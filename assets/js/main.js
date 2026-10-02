@@ -23,22 +23,22 @@
   menuBtn?.addEventListener("click", () => setMenu(menuBtn.getAttribute("aria-expanded") !== "true"));
   nav?.addEventListener("click", (e) => { if (e.target.closest("a")) setMenu(false); });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") setMenu(false); });
-  const onScroll = () => header?.classList.toggle("scrolled", window.scrollY > 8);
-  onScroll();
-  window.addEventListener("scroll", onScroll, { passive: true });
 
   $$("[data-year]").forEach((el) => { el.textContent = new Date().getFullYear(); });
 
-  /* ---------- Reveal on scroll ---------- */
-  const reveals = $$(".reveal");
-  if ("IntersectionObserver" in window) {
-    const io = new IntersectionObserver((entries) => entries.forEach((entry) => {
-      if (entry.isIntersecting) { entry.target.classList.add("in"); io.unobserve(entry.target); }
-    }), { rootMargin: "0px 0px -8% 0px" });
-    reveals.forEach((el) => io.observe(el));
-  } else {
-    reveals.forEach((el) => el.classList.add("in"));
-  }
+  /* ---------- Toast + image fade-in ---------- */
+  const toastEl = $(".toast");
+  let toastTimer;
+  const toast = (msg) => {
+    if (!toastEl) return;
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2200);
+  };
+  const markLoaded = (e) => { if (e.target.tagName === "IMG" && e.target.closest(".card-media")) e.target.classList.add("loaded"); };
+  document.addEventListener("load", markLoaded, true);
+  document.addEventListener("error", markLoaded, true);
 
   /* ---------- Sample inventory ----------
      Representative listings for layout and filtering. Replace with live inventory when available. */
@@ -57,16 +57,16 @@
     { id: "ARG-112", title: "3 BHK Apartment", type: "Residential", bhk: 3, loc: "Ghaziabad", sub: "Indirapuram", price: 135, area: 1600, baths: 3, status: "Ready to move", img: "1600566753190-17f0baa2a6c3" },
   ];
 
-  const cardHTML = (p) => {
+  const cardHTML = (p, i = 0) => {
     const specs = [
       p.bhk ? `<span><svg class="icon"><use href="#bed"/></svg>${p.bhk} BHK</span>` : "",
       p.baths && p.type === "Residential" ? `<span><svg class="icon"><use href="#bath"/></svg>${p.baths} Bath</span>` : "",
       `<span><svg class="icon"><use href="#area"/></svg>${p.area.toLocaleString("en-IN")} sq.ft</span>`,
     ].join("");
     const msg = `Hi ARG, I'd like to know more about ${p.title} in ${p.sub}, ${p.loc} (Ref ${p.id}, ${priceLabel(p.price)}). Can we schedule a site visit?`;
-    return `<article class="card">
+    return `<article class="card pop" style="--i:${i}">
       <div class="card-media">
-        <img src="${IMG(p.img, 700)}" alt="${p.title} in ${p.sub}, ${p.loc}" width="700" height="525" loading="lazy">
+        <img src="${IMG(p.img, 700)}" srcset="${[400, 700, 1000].map((w) => `${IMG(p.img, w)} ${w}w`).join(", ")}" sizes="(max-width: 700px) 100vw, (max-width: 1100px) 33vw, 25vw" decoding="async" alt="${p.title} in ${p.sub}, ${p.loc}" width="700" height="525" loading="lazy">
         <span class="pill pill-verified"><svg class="icon"><use href="#shield"/></svg>ARG Verified</span>
         <span class="card-type">${p.status}</span>
       </div>
@@ -98,6 +98,7 @@
     const next = ids.includes(id) ? ids.filter((x) => x !== id) : [...ids, id];
     writeShortlist(next);
     btn.setAttribute("aria-pressed", String(next.includes(id)));
+    toast(next.includes(id) ? "♥  Saved to your shortlist" : "Removed from your shortlist");
   });
 
   /* ---------- Home: featured listings with tabs ---------- */
@@ -209,4 +210,187 @@
     });
     openWhatsApp(lines.join("\n"));
   }));
+
+  /* =====================================================================
+     Motion & interaction
+     One rAF-throttled scroll loop, one IntersectionObserver, pointer effects
+     only on mouse/trackpad devices, and nothing at all for reduced motion.
+     ===================================================================== */
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const finePointer = matchMedia("(hover: hover) and (pointer: fine)").matches;
+  const root = document.documentElement;
+
+  // Stagger indexes for grouped items and the mobile menu
+  $$("[data-stagger]").forEach((group) => [...group.children].forEach((el, i) => el.style.setProperty("--i", i)));
+  $$(".nav-links li").forEach((el, i) => el.style.setProperty("--i", i));
+  $$(".feature, .check, .path, .quote").forEach((el) => el.classList.add("spot"));
+
+  // Split section headings into words for a line-by-line reveal
+  const headings = reduce ? [] : $$(".section-head h2, .split-copy h2, .faq-side h2, .banner h2, .footer-cta h2");
+  headings.forEach((h) => {
+    let wi = 0;
+    const walk = (node) => [...node.childNodes].forEach((n) => {
+      if (n.nodeType === 3) {
+        const frag = document.createDocumentFragment();
+        n.textContent.split(/(\s+)/).forEach((part) => {
+          if (!part) return;
+          if (/^\s+$/.test(part)) { frag.append(part); return; }
+          const w = document.createElement("span");
+          const inner = document.createElement("span");
+          w.className = "w";
+          inner.textContent = part;
+          inner.style.setProperty("--wi", wi++);
+          w.append(inner);
+          frag.append(w);
+        });
+        n.replaceWith(frag);
+      } else if (n.nodeType === 1 && n.tagName !== "BR") walk(n);
+    });
+    walk(h);
+    h.classList.add("split-words");
+  });
+
+  // Count-up numbers
+  const countUp = (el) => {
+    if (el.dataset.done) return;
+    el.dataset.done = "1";
+    const target = Number(el.dataset.count);
+    if (reduce || !target) { el.textContent = target; return; }
+    const start = performance.now(), dur = 1400;
+    const tick = (now) => {
+      const t = Math.min(1, (now - start) / dur);
+      el.textContent = Math.round(target * (1 - Math.pow(1 - t, 3)));
+      if (t < 1) requestAnimationFrame(tick);
+    };
+    el.textContent = "0";
+    requestAnimationFrame(tick);
+  };
+
+  // Reveal on scroll; revealing one item in a group reveals its siblings with a stagger
+  const show = (el) => {
+    if (el.classList.contains("in")) return;
+    el.classList.add("in");
+    if (el.classList.contains("reveal")) el.addEventListener("transitionend", () => el.classList.add("settled"), { once: true });
+    $$("[data-count]", el).forEach(countUp);
+    const group = el.parentElement;
+    if (group && group.hasAttribute("data-stagger")) $$(":scope > .reveal", group).forEach(show);
+  };
+  const watched = [...$$(".reveal"), ...headings, ...$$(".skyline")];
+  if ("IntersectionObserver" in window && !reduce) {
+    const io = new IntersectionObserver((entries) => entries.forEach((entry) => {
+      if (entry.isIntersecting) { show(entry.target); io.unobserve(entry.target); }
+    }), { rootMargin: "0px 0px -8% 0px", threshold: .08 });
+    watched.forEach((el) => io.observe(el));
+  } else {
+    watched.forEach(show);
+    $$("[data-count]").forEach(countUp);
+  }
+
+  // Hero word rotator
+  const rot = $(".rotator em");
+  if (rot && !reduce) {
+    const box = rot.parentElement;
+    const words = rot.dataset.words.split("|");
+    let k = 0;
+    const fit = () => { box.style.width = `${rot.getBoundingClientRect().width}px`; };
+    (document.fonts ? document.fonts.ready : Promise.resolve()).then(fit);
+    addEventListener("resize", fit, { passive: true });
+    setInterval(() => {
+      if (document.hidden) return;
+      k = (k + 1) % words.length;
+      rot.classList.add("out");
+      setTimeout(() => {
+        rot.classList.replace("out", "pre");
+        rot.textContent = words[k];
+        fit();
+        requestAnimationFrame(() => requestAnimationFrame(() => rot.classList.remove("pre")));
+      }, 450);
+    }, 2800);
+  }
+
+  // Pointer effects: hero parallax, card tilt, cursor spotlight
+  if (finePointer && !reduce) {
+    const scene = $("[data-parallax]");
+    if (scene) {
+      const layers = $$("[data-depth]", scene);
+      let tx = 0, ty = 0, cx = 0, cy = 0, raf = 0;
+      const loop = () => {
+        cx += (tx - cx) * .08;
+        cy += (ty - cy) * .08;
+        layers.forEach((l) => { const d = Number(l.dataset.depth); l.style.translate = `${(-cx * d).toFixed(2)}px ${(-cy * d).toFixed(2)}px`; });
+        raf = Math.abs(tx - cx) + Math.abs(ty - cy) > .001 ? requestAnimationFrame(loop) : 0;
+      };
+      const hero = scene.closest(".hero");
+      hero.addEventListener("pointermove", (e) => {
+        const r = scene.getBoundingClientRect();
+        tx = (e.clientX - (r.left + r.width / 2)) / r.width;
+        ty = (e.clientY - (r.top + r.height / 2)) / r.height;
+        if (!raf) raf = requestAnimationFrame(loop);
+      }, { passive: true });
+      hero.addEventListener("pointerleave", () => { tx = ty = 0; if (!raf) raf = requestAnimationFrame(loop); });
+    }
+
+    let lastMove = null, moveRaf = 0;
+    document.addEventListener("pointermove", (e) => {
+      lastMove = e;
+      if (moveRaf) return;
+      moveRaf = requestAnimationFrame(() => {
+        moveRaf = 0;
+        const t = lastMove.target;
+        if (!(t instanceof Element)) return;
+        const spot = t.closest(".spot");
+        if (spot) {
+          const r = spot.getBoundingClientRect();
+          spot.style.setProperty("--mx", `${lastMove.clientX - r.left}px`);
+          spot.style.setProperty("--my", `${lastMove.clientY - r.top}px`);
+        }
+        const card = t.closest(".card");
+        if (card) {
+          const r = card.getBoundingClientRect();
+          const x = (lastMove.clientX - r.left) / r.width - .5, y = (lastMove.clientY - r.top) / r.height - .5;
+          card.style.transform = `perspective(900px) rotateX(${(-y * 5).toFixed(2)}deg) rotateY(${(x * 6).toFixed(2)}deg) translateY(-4px)`;
+        }
+      });
+    }, { passive: true });
+    document.addEventListener("pointerout", (e) => {
+      const card = e.target instanceof Element && e.target.closest(".card");
+      if (card && !card.contains(e.relatedTarget)) card.style.transform = "";
+    });
+  }
+
+  // Single scroll loop: progress bar, header hide/show, back-to-top, step line
+  const toTop = $(".to-top");
+  const stepLists = $$(".steps");
+  let lastY = scrollY, ticking = false;
+  const onScroll = () => {
+    ticking = false;
+    const y = scrollY, max = root.scrollHeight - innerHeight;
+    root.style.setProperty("--sp", max > 0 ? (y / max).toFixed(4) : "0");
+    header?.classList.toggle("scrolled", y > 8);
+    if (header && !nav?.classList.contains("open")) {
+      if (y > 480 && y > lastY + 6) header.classList.add("hide");
+      else if (y < lastY - 6 || y < 480) header.classList.remove("hide");
+    }
+    toTop?.classList.toggle("show", y > 700);
+    stepLists.forEach((list) => {
+      const items = [...list.children];
+      const r = list.getBoundingClientRect();
+      const horizontal = items.length > 1 && Math.abs(items[0].getBoundingClientRect().top - items[1].getBoundingClientRect().top) < 4;
+      let p;
+      if (horizontal) {
+        p = Math.min(1, Math.max(0, (innerHeight * .85 - r.top) / (innerHeight * .45)));
+        items.forEach((li, i) => li.classList.toggle("lit", p > 0 && p >= i / (items.length - 1) - .02));
+      } else {
+        const line = innerHeight * .7;
+        p = Math.min(1, Math.max(0, (line - r.top) / r.height));
+        items.forEach((li) => li.classList.toggle("lit", li.getBoundingClientRect().top < line));
+      }
+      list.style.setProperty("--p", p.toFixed(3));
+    });
+    lastY = y;
+  };
+  addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
+  addEventListener("resize", onScroll, { passive: true });
+  onScroll();
+  toTop?.addEventListener("click", () => scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" }));
 })();
