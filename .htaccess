@@ -1,0 +1,15 @@
+# Clean URLs for Apache / Hostinger: /buy serves buy.html, and old /buy.html links redirect to /buy
+Options -MultiViews
+RewriteEngine On
+
+# Old links: /page.html -> /page (permanent redirect, keeps any ?query)
+RewriteCond %{THE_REQUEST} \s/+([^?\s]*?)\.html[\s?] [NC]
+RewriteRule ^ /%1 [R=301,L,NE]
+
+# /index -> /
+RewriteRule ^index/?$ / [R=301,L]
+
+# Serve /page from page.html when that file exists
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^(.+?)/?$ $1.html [L]

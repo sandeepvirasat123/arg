@@ -65,16 +65,16 @@
     <div class="topbar-links"><span class="hide-sm"><svg class="icon" aria-hidden="true"><use href="#clock"/></svg>Open all week · 9:30 AM – 7:30 PM</span><a href="mailto:info@assetrealtygroup.in"><svg class="icon" aria-hidden="true"><use href="#mail"/></svg>info@assetrealtygroup.in</a></div>
   </div></div>
   <header class="site-header"><div class="wrap head">
-    <a class="brand" href="index.html" aria-label="Asset Realty Group — home">
+    <a class="brand" href="./" aria-label="Asset Realty Group — home">
       <img src="https://propertyplusrealtors.com/logo.jpeg" alt="" width="52" height="52">
       <span class="brand-text"><strong>Asset Realty Group</strong><small>YOUR PROPERTY, OUR PRIORITY</small></span>
     </a>
     <button class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-nav"><svg class="icon open-i" aria-hidden="true"><use href="#menu"/></svg><svg class="icon close-i" aria-hidden="true"><use href="#close"/></svg></button>
     <nav class="nav" id="site-nav" aria-label="Main">
-      <ul class="nav-links"><li><a href="index.html" aria-current="page">Home</a></li><li><a href="buy.html">Buy</a></li><li><a href="sell.html">Sell</a></li><li><a href="partner.html">Partner</a></li><li><a href="about.html">About</a></li><li><a href="contact.html">Contact</a></li></ul>
+      <ul class="nav-links"><li><a href="./" aria-current="page">Home</a></li><li><a href="buy">Buy</a></li><li><a href="sell">Sell</a></li><li><a href="partner">Partner</a></li><li><a href="about">About</a></li><li><a href="contact">Contact</a></li></ul>
       <div class="nav-actions">
         <a class="nav-phone" href="tel:+919217093330"><svg class="icon" aria-hidden="true"><use href="#phone"/></svg><span>+91 92170 93330</span></a>
-        <a class="btn btn-copper btn-sm" href="contact.html">Free consultation <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></a>
+        <a class="btn btn-copper btn-sm" href="contact">Free consultation <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></a>
       </div>
     </nav>
   </div></header>
@@ -88,18 +88,23 @@
         <p class="eyebrow anim" style="--d:1"><span class="live-dot"></span>Greater Noida West · Delhi NCR</p>
         <h1 class="anim" style="--d:2" aria-label="Find a home you can trust.">Find a home you can <span class="rotator" aria-hidden="true"><em data-words="trust|afford|love|grow into">trust</em></span><span aria-hidden="true">.</span></h1>
         <p class="hero-lead anim" style="--d:3">Every property we recommend is checked for title, approvals and fair pricing before you ever visit. Buy or sell across NCR — or partner with us — with one local team handling the details.</p>
-        <form class="search anim" style="--d:4" id="hero-search" action="buy.html" method="get" role="search" aria-label="Property search">
+        <form class="search anim" style="--d:4" id="hero-search" action="buy" method="get" role="search" aria-label="Property search">
           <div class="search-tabs" role="tablist">
             <button class="search-tab" type="button" role="tab" aria-selected="true" data-intent="buy" data-cta="Search">Buy</button>
             <button class="search-tab" type="button" role="tab" aria-selected="false" data-intent="sell" data-cta="Get valuation">Sell</button>
             <button class="search-tab" type="button" role="tab" aria-selected="false" data-intent="partner" data-cta="Partner with us">Partner</button>
           </div>
           <input type="hidden" name="intent" value="buy">
-          <div class="search-body">
+          <div class="search-body" data-panel="search">
             <div class="search-field"><label for="s-loc">Location</label><select id="s-loc" name="loc"><option value="">All of NCR</option><option>Greater Noida West</option><option>Noida</option><option>Greater Noida</option><option>Ghaziabad</option></select></div>
             <div class="search-field"><label for="s-type">Property</label><select id="s-type" name="type"><option value="">Any type</option><option value="Residential">Apartment / Villa</option><option value="Commercial">Office / Shop</option><option value="Plot">Plot / Land</option></select></div>
             <div class="search-field"><label for="s-budget">Budget</label><select id="s-budget" name="budget"><option value="">Any budget</option><option value="0-50">Under ₹50 Lakh</option><option value="50-80">₹50 – 80 Lakh</option><option value="80-120">₹80 Lakh – 1.2 Cr</option><option value="120-200">₹1.2 – 2 Cr</option><option value="200-100000">Above ₹2 Cr</option></select></div>
             <button class="btn btn-copper" type="submit"><svg class="icon" aria-hidden="true"><use href="#search"/></svg><span>Search</span></button>
+          </div>
+          <div class="search-body partner" data-panel="partner" hidden>
+            <div class="search-field"><label for="s-name">Your name</label><input id="s-name" name="name" autocomplete="name" required minlength="2" placeholder="Full name" disabled></div>
+            <div class="search-field"><label for="s-phone">Mobile number</label><input id="s-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required pattern="[0-9+\s-]{10,15}" placeholder="10-digit number" disabled></div>
+            <button class="btn btn-copper" type="submit"><svg class="icon" aria-hidden="true"><use href="#wa"/></svg><span>Connect</span></button>
           </div>
         </form>
         <ul class="hero-checks anim" style="--d:5"><li><svg class="icon" aria-hidden="true"><use href="#check"/></svg>Title &amp; RERA checked</li><li><svg class="icon" aria-hidden="true"><use href="#check"/></svg>No hidden charges</li><li><svg class="icon" aria-hidden="true"><use href="#check"/></svg>Support till registry</li></ul>
@@ -127,27 +132,28 @@
       <div class="paths three" data-stagger>
         <article class="path reveal"><span class="path-tag">For buyers</span><h3>Buy with every question answered</h3><p>Skip the guesswork of scattered listings. We shortlist homes that fit your budget and life, and tell you what we found when we checked them.</p>
           <ul><li><svg class="icon" aria-hidden="true"><use href="#check"/></svg>Shortlists built around your commute, schools and budget</li><li><svg class="icon" aria-hidden="true"><use href="#check"/></svg>Title, approvals and dues reviewed before your visit</li><li><svg class="icon" aria-hidden="true"><use href="#check"/></svg>Price negotiation backed by local deal data</li><li><svg class="icon" aria-hidden="true"><use href="#check"/></svg>A real person with you through agreement and registry</li></ul>
-          <a class="btn btn-dark" href="buy.html">Browse verified homes <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></a></article>
+          <a class="btn btn-dark" href="buy">Browse verified homes <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></a></article>
         <article class="path dark reveal"><span class="path-tag">For owners</span><h3>Sell without the endless calls</h3><p>Get a realistic price based on actual transactions near you, then let us bring serious, pre-qualified buyers to your door.</p>
           <ul><li><svg class="icon" aria-hidden="true"><use href="#check"/></svg>Free, data-backed valuation of your property</li><li><svg class="icon" aria-hidden="true"><use href="#check"/></svg>Professional photos and targeted promotion</li><li><svg class="icon" aria-hidden="true"><use href="#check"/></svg>Only screened buyers visit your home</li><li><svg class="icon" aria-hidden="true"><use href="#check"/></svg>Negotiation, NOCs and transfer paperwork handled</li></ul>
-          <a class="btn btn-copper" href="sell.html">Get a free valuation <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></a></article>
+          <a class="btn btn-copper" href="sell">Get a free valuation <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></a></article>
         <article class="path reveal"><span class="path-tag">For partners</span><h3>Partner and grow with us</h3><p>Brokers, channel partners and developers can tap into our verified inventory, local reach and closing support.</p>
           <ul><li><svg class="icon" aria-hidden="true"><use href="#check"/></svg>Access to verified resale and project listings</li><li><svg class="icon" aria-hidden="true"><use href="#check"/></svg>Clear terms agreed in writing upfront</li><li><svg class="icon" aria-hidden="true"><use href="#check"/></svg>Shared site visits and negotiation support</li><li><svg class="icon" aria-hidden="true"><use href="#check"/></svg>Paperwork and registry handled by our team</li></ul>
-          <a class="btn btn-dark" href="partner.html">Become a partner <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></a></article>
+          <a class="btn btn-dark" href="partner">Become a partner <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></a></article>
       </div>
     </div></section>
 
     <section class="section bg-paper"><div class="wrap">
       <div class="head-row reveal">
         <div class="section-head"><p class="eyebrow">Handpicked this week</p><h2>Verified properties</h2></div>
-        <div class="tabs" role="tablist" aria-label="Property type">
-          <button class="tab" type="button" role="tab" aria-selected="true" data-featured="Residential">Homes</button>
-          <button class="tab" type="button" role="tab" aria-selected="false" data-featured="Commercial">Commercial</button>
-          <button class="tab" type="button" role="tab" aria-selected="false" data-featured="Plot">Plots</button>
+        <div class="tabs" role="tablist" aria-label="Apartment type">
+          <button class="tab" type="button" role="tab" aria-selected="true" data-featured="all">All homes</button>
+          <button class="tab" type="button" role="tab" aria-selected="false" data-featured="2">2 BHK</button>
+          <button class="tab" type="button" role="tab" aria-selected="false" data-featured="3">3 BHK</button>
+          <button class="tab" type="button" role="tab" aria-selected="false" data-featured="4">4 BHK+</button>
         </div>
       </div>
       <div class="listing-grid" id="featured-grid" aria-live="polite"></div>
-      <div class="head-row" style="margin:30px 0 0;align-items:center"><p class="note" style="margin:0">Representative listings — availability and prices change often, so confirm with our team.</p><a class="btn btn-ghost" href="buy.html">See all properties <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></a></div>
+      <div class="head-row" style="margin:30px 0 0;align-items:center"><p class="note" style="margin:0">Representative listings — availability and prices change often, so confirm with our team.</p><a class="btn btn-ghost" id="featured-more" href="buy?type=Residential">See all homes <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></a></div>
     </div></section>
 
     <section class="section bg-dark on-dark"><div class="wrap verify-grid">
@@ -181,11 +187,11 @@
     <section class="section bg-paper"><div class="wrap">
       <div class="section-head reveal"><p class="eyebrow">Where we work</p><h2>Local knowledge across <em>NCR's growth corridors</em></h2><p>We focus on a handful of markets and know them well — down to which towers get the evening sun.</p></div>
       <div class="areas" data-stagger>
-        <a class="area big reveal" href="buy.html?loc=Greater+Noida+West"><img src="https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=1000&q=80" srcset="https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=480&q=75 480w, https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=800&q=75 800w, https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=1200&q=75 1200w" sizes="(max-width: 960px) 100vw, 50vw" decoding="async" alt="" loading="lazy"><h3>Greater Noida West</h3><p>Our home turf. Large gated societies, value pricing and fast-improving metro connectivity.</p><span class="link">View homes <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></span></a>
-        <a class="area reveal" href="buy.html?loc=Noida"><img src="https://images.unsplash.com/photo-1574362848149-11496d93a7c7?auto=format&fit=crop&w=700&q=80" srcset="https://images.unsplash.com/photo-1574362848149-11496d93a7c7?auto=format&fit=crop&w=480&q=75 480w, https://images.unsplash.com/photo-1574362848149-11496d93a7c7?auto=format&fit=crop&w=800&q=75 800w, https://images.unsplash.com/photo-1574362848149-11496d93a7c7?auto=format&fit=crop&w=1200&q=75 1200w" sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw" decoding="async" alt="" loading="lazy"><h3>Noida</h3><p>Established sectors close to offices and the expressway.</p></a>
-        <a class="area reveal" href="buy.html?loc=Greater+Noida"><img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=700&q=80" srcset="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=480&q=75 480w, https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=75 800w, https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=75 1200w" sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw" decoding="async" alt="" loading="lazy"><h3>Greater Noida</h3><p>Wide roads, villas and plots near the Yamuna Expressway.</p></a>
-        <a class="area reveal" href="buy.html?loc=Ghaziabad"><img src="https://images.unsplash.com/photo-1515263487990-61b07816b324?auto=format&fit=crop&w=700&q=80" srcset="https://images.unsplash.com/photo-1515263487990-61b07816b324?auto=format&fit=crop&w=480&q=75 480w, https://images.unsplash.com/photo-1515263487990-61b07816b324?auto=format&fit=crop&w=800&q=75 800w, https://images.unsplash.com/photo-1515263487990-61b07816b324?auto=format&fit=crop&w=1200&q=75 1200w" sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw" decoding="async" alt="" loading="lazy"><h3>Ghaziabad</h3><p>Indirapuram to Raj Nagar Extension, well linked to Delhi.</p></a>
-        <a class="area reveal" href="buy.html?type=Commercial"><img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=700&q=80" srcset="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=480&q=75 480w, https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=75 800w, https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=75 1200w" sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw" decoding="async" alt="" loading="lazy"><h3>Commercial hubs</h3><p>Offices and retail in Techzone 4, Sector 62 and Sector 132.</p></a>
+        <a class="area big reveal" href="buy?loc=Greater+Noida+West"><img src="https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=1000&q=80" srcset="https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=480&q=75 480w, https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=800&q=75 800w, https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=1200&q=75 1200w" sizes="(max-width: 960px) 100vw, 50vw" decoding="async" alt="" loading="lazy"><h3>Greater Noida West</h3><p>Our home turf. Large gated societies, value pricing and fast-improving metro connectivity.</p><span class="link">View homes <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></span></a>
+        <a class="area reveal" href="buy?loc=Noida"><img src="https://images.unsplash.com/photo-1574362848149-11496d93a7c7?auto=format&fit=crop&w=700&q=80" srcset="https://images.unsplash.com/photo-1574362848149-11496d93a7c7?auto=format&fit=crop&w=480&q=75 480w, https://images.unsplash.com/photo-1574362848149-11496d93a7c7?auto=format&fit=crop&w=800&q=75 800w, https://images.unsplash.com/photo-1574362848149-11496d93a7c7?auto=format&fit=crop&w=1200&q=75 1200w" sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw" decoding="async" alt="" loading="lazy"><h3>Noida</h3><p>Established sectors close to offices and the expressway.</p></a>
+        <a class="area reveal" href="buy?loc=Greater+Noida"><img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=700&q=80" srcset="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=480&q=75 480w, https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=75 800w, https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=75 1200w" sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw" decoding="async" alt="" loading="lazy"><h3>Greater Noida</h3><p>Wide roads, villas and plots near the Yamuna Expressway.</p></a>
+        <a class="area reveal" href="buy?loc=Ghaziabad"><img src="https://images.unsplash.com/photo-1515263487990-61b07816b324?auto=format&fit=crop&w=700&q=80" srcset="https://images.unsplash.com/photo-1515263487990-61b07816b324?auto=format&fit=crop&w=480&q=75 480w, https://images.unsplash.com/photo-1515263487990-61b07816b324?auto=format&fit=crop&w=800&q=75 800w, https://images.unsplash.com/photo-1515263487990-61b07816b324?auto=format&fit=crop&w=1200&q=75 1200w" sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw" decoding="async" alt="" loading="lazy"><h3>Ghaziabad</h3><p>Indirapuram to Raj Nagar Extension, well linked to Delhi.</p></a>
+        <a class="area reveal" href="buy?type=Commercial"><img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=700&q=80" srcset="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=480&q=75 480w, https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=75 800w, https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=75 1200w" sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw" decoding="async" alt="" loading="lazy"><h3>Commercial hubs</h3><p>Offices and retail in Techzone 4, Sector 62 and Sector 132.</p></a>
       </div>
       <div class="chips reveal"><span class="chip"><svg class="icon" aria-hidden="true"><use href="#pin"/></svg>Gaur City</span><span class="chip"><svg class="icon" aria-hidden="true"><use href="#pin"/></svg>Bisrakh</span><span class="chip"><svg class="icon" aria-hidden="true"><use href="#pin"/></svg>Techzone 4</span><span class="chip"><svg class="icon" aria-hidden="true"><use href="#pin"/></svg>Sector 1–16 GN West</span><span class="chip"><svg class="icon" aria-hidden="true"><use href="#pin"/></svg>Pratap Vihar</span><span class="chip"><svg class="icon" aria-hidden="true"><use href="#pin"/></svg>Yamuna Expressway</span><span class="chip"><svg class="icon" aria-hidden="true"><use href="#pin"/></svg>Indirapuram</span><span class="chip"><svg class="icon" aria-hidden="true"><use href="#pin"/></svg>Sector 150</span></div>
     </div></section>
@@ -194,11 +200,11 @@
       <div class="split" style="align-items:start">
         <div class="split-copy reveal"><p class="eyebrow">Partner with ARG</p><h2>Grow your business <em>with us.</em></h2><p>Are you a broker, channel partner or developer? Work with a team that verifies every deal, shares inventory openly and pays on time.</p>
           <ul class="ticks"><li><svg class="icon" aria-hidden="true"><use href="#check"/></svg><span><strong>Verified inventory to sell</strong>Access our checked resale and project listings across NCR.</span></li><li><svg class="icon" aria-hidden="true"><use href="#check"/></svg><span><strong>Clear, written terms</strong>Agreed before the first deal, with no surprises at closing.</span></li></ul>
-          <a class="btn btn-dark" href="partner.html">Become a partner <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></a></div>
+          <a class="btn btn-dark" href="partner">Become a partner <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></a></div>
         <div class="reveal">
           <div class="banner" style="grid-template-columns:1fr">
             <div><h2>Selling soon?</h2><p>Find out what your property is worth today. Our free valuation uses recent transactions in your society and sector — not online averages.</p></div>
-            <div class="banner-actions"><a class="btn btn-copper" href="sell.html">Get my free valuation <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></a><a class="btn btn-light" href="tel:+919217093330"><svg class="icon" aria-hidden="true"><use href="#phone"/></svg>Talk to an advisor</a></div>
+            <div class="banner-actions"><a class="btn btn-copper" href="sell">Get my free valuation <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></a><a class="btn btn-light" href="tel:+919217093330"><svg class="icon" aria-hidden="true"><use href="#phone"/></svg>Talk to an advisor</a></div>
           </div>
         </div>
       </div>
@@ -214,7 +220,7 @@
     </div></section>
 
     <section class="section bg-paper" id="faq"><div class="wrap faq-grid">
-      <div class="faq-side reveal"><p class="eyebrow">Good questions</p><h2>Things people <em>often ask</em></h2><p>Can't find your answer? Our advisors are happy to help — call or WhatsApp any day of the week.</p><a class="btn btn-dark" href="contact.html">Ask us anything <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></a></div>
+      <div class="faq-side reveal"><p class="eyebrow">Good questions</p><h2>Things people <em>often ask</em></h2><p>Can't find your answer? Our advisors are happy to help — call or WhatsApp any day of the week.</p><a class="btn btn-dark" href="contact">Ask us anything <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></a></div>
       <div class="faq-list reveal" data-stagger><details class="faq" open><summary>What does “ARG Verified” mean?</summary><p>It means our team has reviewed the property's ownership documents, RERA registration and approvals, checked for pending dues, inspected the unit in person and compared its price with recent nearby deals. We share what we find — including any concerns — before you decide.</p></details><details class="faq"><summary>Do you charge buyers a fee?</summary><p>Our fee structure is shared upfront in writing before any work begins, so there are no surprises later. Call us and we'll explain it for your specific requirement.</p></details><details class="faq"><summary>Which areas do you cover?</summary><p>We focus on Greater Noida West, Noida, Greater Noida and Ghaziabad, including Gaur City, Bisrakh, Techzone 4, Indirapuram, Raj Nagar Extension and the Yamuna Expressway belt.</p></details><details class="faq"><summary>Can you help with resale and new projects?</summary><p>Yes. We work with resale homes, ready-to-move units and selected under-construction projects, as well as commercial spaces and plots.</p></details><details class="faq"><summary>I'm a broker or developer. Can I work with ARG?</summary><p>Yes. We partner with brokers, channel partners, developers and referral partners. Visit our Partner page or call us to get started.</p></details><details class="faq"><summary>How quickly can I visit a property?</summary><p>In most cases we can arrange a site visit within 24 hours, seven days a week, at a time that suits you.</p></details></div>
     </div></section>
   </main>
@@ -227,11 +233,11 @@
     </div>
     <div class="wrap footer-main">
       <div>
-        <a class="brand" href="index.html" aria-label="Asset Realty Group — home"><img src="https://propertyplusrealtors.com/logo.jpeg" alt="" width="52" height="52"><span class="brand-text"><strong>Asset Realty Group</strong><small>YOUR PROPERTY, OUR PRIORITY</small></span></a>
+        <a class="brand" href="./" aria-label="Asset Realty Group — home"><img src="https://propertyplusrealtors.com/logo.jpeg" alt="" width="52" height="52"><span class="brand-text"><strong>Asset Realty Group</strong><small>YOUR PROPERTY, OUR PRIORITY</small></span></a>
         <p class="footer-about">A Greater Noida West property consultancy helping buyers, sellers and partners move with verified information and honest advice across Delhi NCR.</p>
       </div>
-      <div class="footer-col"><h3>Explore</h3><ul><li><a href="buy.html">Buy a home</a></li><li><a href="sell.html">Sell your property</a></li><li><a href="partner.html">Partner with us</a></li><li><a href="about.html">About ARG</a></li><li><a href="contact.html">Contact</a></li></ul></div>
-      <div class="footer-col"><h3>Popular areas</h3><ul><li><a href="buy.html?loc=Greater+Noida+West">Greater Noida West</a></li><li><a href="buy.html?loc=Noida">Noida</a></li><li><a href="buy.html?loc=Greater+Noida">Greater Noida</a></li><li><a href="buy.html?loc=Ghaziabad">Ghaziabad</a></li></ul></div>
+      <div class="footer-col"><h3>Explore</h3><ul><li><a href="buy">Buy a home</a></li><li><a href="sell">Sell your property</a></li><li><a href="partner">Partner with us</a></li><li><a href="about">About ARG</a></li><li><a href="contact">Contact</a></li></ul></div>
+      <div class="footer-col"><h3>Popular areas</h3><ul><li><a href="buy?loc=Greater+Noida+West">Greater Noida West</a></li><li><a href="buy?loc=Noida">Noida</a></li><li><a href="buy?loc=Greater+Noida">Greater Noida</a></li><li><a href="buy?loc=Ghaziabad">Ghaziabad</a></li></ul></div>
       <div class="footer-col"><h3>Visit us</h3><ul>
         <li><svg class="icon" aria-hidden="true"><use href="#pin"/></svg><span>Office No. T-39B, 3rd Floor, Galaxy Blue Sapphire Plaza, Greater Noida West, U.P. 201306</span></li>
         <li><svg class="icon" aria-hidden="true"><use href="#phone"/></svg><a href="tel:+919217093330">+91 92170 93330</a></li>

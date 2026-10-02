@@ -15,7 +15,7 @@ Static multi-page website for Asset Realty Group (ARG), Greater Noida West. ARG 
 
 Shared assets:
 
-- `assets/css/style.css` — design tokens and all styles (palette: slate `#243441`, steel blue `#347fb0`, copper `#d97745`, paper `#eff5fa`)
+- `assets/css/style.css` — design tokens and all styles (palette: slate `#243441`, steel blue `#347fb0`, logo gold `#bc9b5e` with a deeper `#a8864d` for buttons and text on light backgrounds, paper `#eff5fa`)
 - `assets/js/main.js` — mobile menu, scroll reveal, hero search, listings and filters, valuation stepper, forms → WhatsApp
 
 ## Editing content
@@ -26,6 +26,13 @@ Shared assets:
 
 All forms open WhatsApp with the enquiry pre-filled; nothing is sent to a server.
 
+## Clean URLs
+
+Links use clean addresses such as `/buy`, `/sell` and `/partner` (no `.html`). The files on disk are still `buy.html` etc., so the web server must map one to the other:
+
+- **Hostinger / Apache:** the included `.htaccess` does this, and permanently redirects old `.html` links to the clean address.
+- **Netlify, Vercel (with `cleanUrls`), GitHub Pages, Cloudflare Pages:** supported natively.
+
 ## Running locally
 
-Open `index.html` in a browser, or serve the folder (e.g. `npx serve .`) to test links with query strings like `buy.html?loc=Noida`.
+Serve the folder with `npx serve .` (it supports clean URLs) and open http://localhost:3000. Opening the HTML files directly by double-clicking will show the pages, but links between pages will not work without a server.

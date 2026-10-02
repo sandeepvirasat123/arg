@@ -55,6 +55,11 @@
     { id: "ARG-110", title: "1 BHK Studio", type: "Residential", bhk: 1, loc: "Noida", sub: "Sector 75", price: 42, area: 620, baths: 1, status: "Ready to move", img: "1484154218962-a197022b5858" },
     { id: "ARG-111", title: "Commercial Office Floor", type: "Commercial", bhk: 0, loc: "Noida", sub: "Sector 132", price: 420, area: 5400, baths: 4, status: "Ready to move", img: "1554469384-e58fac16e23a" },
     { id: "ARG-112", title: "3 BHK Apartment", type: "Residential", bhk: 3, loc: "Ghaziabad", sub: "Indirapuram", price: 135, area: 1600, baths: 3, status: "Ready to move", img: "1600566753190-17f0baa2a6c3" },
+    { id: "ARG-113", title: "2 BHK Apartment", type: "Residential", bhk: 2, loc: "Greater Noida West", sub: "Sector 16B", price: 68, area: 1080, baths: 2, status: "Ready to move", img: "1515263487990-61b07816b324" },
+    { id: "ARG-114", title: "2 BHK Apartment", type: "Residential", bhk: 2, loc: "Noida", sub: "Sector 137", price: 78, area: 1125, baths: 2, status: "Under construction", img: "1556909114-f6e7ad7d3136" },
+    { id: "ARG-115", title: "3 BHK Apartment", type: "Residential", bhk: 3, loc: "Noida", sub: "Sector 76", price: 145, area: 1650, baths: 3, status: "Ready to move", img: "1574362848149-11496d93a7c7" },
+    { id: "ARG-116", title: "4 BHK Apartment", type: "Residential", bhk: 4, loc: "Greater Noida West", sub: "Gaur City 1", price: 165, area: 2150, baths: 4, status: "Ready to move", img: "1460317442991-0ec209397118" },
+    { id: "ARG-117", title: "4 BHK Builder Floor", type: "Residential", bhk: 4, loc: "Ghaziabad", sub: "Indirapuram", price: 190, area: 2400, baths: 4, status: "Ready to move", img: "1600596542815-ffad4c1539a9" },
   ];
 
   const cardHTML = (p, i = 0) => {
@@ -104,30 +109,50 @@
   /* ---------- Home: featured listings with tabs ---------- */
   const featured = $("#featured-grid");
   if (featured) {
-    const render = (type) => {
-      featured.innerHTML = LISTINGS.filter((p) => p.type === type).slice(0, 4).map(cardHTML).join("");
+    const more = $("#featured-more");
+    const homes = LISTINGS.filter((p) => p.type === "Residential");
+    // "All homes" shows one of each size; the BHK tabs filter by bedrooms (4 = 4 BHK and larger)
+    const render = (bhk) => {
+      const list = bhk === "all"
+        ? ["ARG-102", "ARG-101", "ARG-105", "ARG-108"].map((id) => homes.find((p) => p.id === id))
+        : homes.filter((p) => (bhk === "4" ? p.bhk >= 4 : p.bhk === Number(bhk)));
+      featured.innerHTML = list.slice(0, 4).map(cardHTML).join("");
       syncHearts(featured);
+      if (more) more.href = `buy?type=Residential${bhk === "all" ? "" : `&bhk=${bhk}`}`;
     };
     $$("[data-featured]").forEach((tab) => tab.addEventListener("click", () => {
       $$("[data-featured]").forEach((t) => t.setAttribute("aria-selected", String(t === tab)));
       render(tab.dataset.featured);
     }));
-    render("Residential");
+    render("all");
   }
 
   /* ---------- Home: hero search tabs ---------- */
   const heroSearch = $("#hero-search");
   if (heroSearch) {
     const intentInput = $("input[name=intent]", heroSearch);
+    const searchPanel = $("[data-panel=search]", heroSearch);
+    const partnerPanel = $("[data-panel=partner]", heroSearch);
+    // Hidden panel's fields are disabled so they are neither validated nor submitted
+    const showPanel = (panel) => [searchPanel, partnerPanel].forEach((p) => {
+      p.hidden = p !== panel;
+      $$("input, select, button", p).forEach((el) => { el.disabled = p !== panel; });
+    });
     $$(".search-tab", heroSearch).forEach((tab) => tab.addEventListener("click", () => {
       $$(".search-tab", heroSearch).forEach((t) => t.setAttribute("aria-selected", String(t === tab)));
       intentInput.value = tab.dataset.intent;
-      $("button[type=submit] span", heroSearch).textContent = tab.dataset.cta;
+      const isPartner = tab.dataset.intent === "partner";
+      showPanel(isPartner ? partnerPanel : searchPanel);
+      if (!isPartner) $("button[type=submit] span", searchPanel).textContent = tab.dataset.cta;
     }));
     heroSearch.addEventListener("submit", (e) => {
       const intent = intentInput.value;
-      if (intent === "sell") { e.preventDefault(); location.href = "sell.html"; return; }
-      if (intent === "partner") { e.preventDefault(); location.href = "partner.html"; }
+      if (intent === "sell") { e.preventDefault(); location.href = "sell"; return; }
+      if (intent === "partner") {
+        e.preventDefault();
+        openWhatsApp(`Hi ARG, I'd like to connect about partnering with you.\nYour name: ${$("#s-name").value.trim()}\nMobile number: ${$("#s-phone").value.trim()}`);
+        toast("Thanks! Our partner team will be in touch.");
+      }
     });
   }
 
@@ -153,7 +178,7 @@
       if (sort.value === "area") list = list.sort((a, b) => b.area - a.area);
       count.textContent = list.length;
       results.innerHTML = list.length ? list.map(cardHTML).join("") :
-        `<div class="empty"><strong>No matching homes in our current shortlist</strong>Tell us what you need and we'll search off-market options for you.<br><br><a class="btn btn-copper btn-sm" href="contact.html">Share your requirement</a></div>`;
+        `<div class="empty"><strong>No matching homes in our current shortlist</strong>Tell us what you need and we'll search off-market options for you.<br><br><a class="btn btn-copper btn-sm" href="contact">Share your requirement</a></div>`;
       syncHearts(results);
     };
     form.addEventListener("submit", (e) => { e.preventDefault(); apply(); results.scrollIntoView({ behavior: "smooth", block: "start" }); });
