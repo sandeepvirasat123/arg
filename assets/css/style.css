@@ -167,6 +167,8 @@ em { font-style: normal; color: var(--copper); }
 
 /* ---------- Path cards (buy / sell) ---------- */
 .paths { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.paths.three { grid-template-columns: repeat(3, 1fr); }
+.paths.three .path h3 { font-size: clamp(26px, 2.4vw, 32px); }
 .path { position: relative; display: flex; flex-direction: column; gap: 18px; overflow: hidden; padding: clamp(26px, 3.6vw, 44px); border-radius: 24px; background: var(--paper); border: 1px solid var(--line); }
 .path.dark { background: var(--slate); border-color: var(--slate); color: #fff; }
 .path h3 { font: clamp(28px, 3vw, 36px)/1.15 var(--serif); }
@@ -268,32 +270,6 @@ em { font-style: normal; color: var(--copper); }
 .banner h2 { font-size: clamp(30px, 4vw, 46px); }
 .banner p { margin-top: 12px; max-width: 600px; color: #c3d1dc; font-size: 17px; }
 .banner-actions { display: flex; flex-wrap: wrap; gap: 12px; }
-
-/* ---------- EMI calculator ---------- */
-.calc { display: grid; grid-template-columns: 1.15fr .85fr; overflow: hidden; border-radius: 24px; background: #fff; border: 1px solid var(--line); box-shadow: var(--shadow); }
-.calc-inputs { display: grid; gap: 26px; padding: clamp(24px, 4vw, 44px); }
-.range { display: grid; gap: 10px; }
-.range-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.range-top label { color: var(--slate); font-weight: 800; font-size: 15px; }
-.range-top output { padding: 6px 12px; border-radius: 8px; background: var(--paper); color: var(--steel); font-weight: 800; font-size: 15px; white-space: nowrap; }
-.range input[type="range"] { width: 100%; height: 6px; margin: 6px 0; border-radius: 6px; background: linear-gradient(90deg, var(--steel) var(--fill, 50%), var(--soft) var(--fill, 50%)); appearance: none; -webkit-appearance: none; outline-offset: 6px; }
-.range input[type="range"]::-webkit-slider-thumb { width: 24px; height: 24px; border: 4px solid #fff; border-radius: 50%; background: var(--copper); box-shadow: 0 2px 8px rgba(24,38,49,.35); -webkit-appearance: none; cursor: pointer; }
-.range input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border: 4px solid #fff; border-radius: 50%; background: var(--copper); box-shadow: 0 2px 8px rgba(24,38,49,.35); cursor: pointer; }
-.range-scale { display: flex; justify-content: space-between; color: var(--muted); font-size: 12.5px; }
-.calc-result { display: flex; flex-direction: column; gap: 18px; padding: clamp(24px, 4vw, 44px); background: var(--slate); color: #fff; }
-.calc-result .label { color: var(--pale); font-size: 13px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
-.calc-emi { font: clamp(40px, 5vw, 54px)/1 var(--serif); }
-.calc-emi small { font: 600 16px var(--sans); color: var(--pale); }
-.donut { display: flex; align-items: center; gap: 18px; }
-.donut-chart { width: 96px; height: 96px; flex: 0 0 auto; border-radius: 50%; background: conic-gradient(var(--steel) 0 var(--p, 60%), var(--copper) var(--p, 60%) 100%); -webkit-mask: radial-gradient(circle, transparent 54%, #000 55%); mask: radial-gradient(circle, transparent 54%, #000 55%); }
-.legend { display: grid; gap: 8px; font-size: 14px; }
-.legend span { display: flex; align-items: center; gap: 8px; color: #c3d1dc; }
-.legend b { color: #fff; margin-left: auto; padding-left: 12px; }
-.legend i { width: 10px; height: 10px; border-radius: 3px; background: var(--steel); }
-.legend i.c { background: var(--copper); }
-.calc-total { display: flex; justify-content: space-between; padding-top: 14px; border-top: 1px solid var(--line-dark); color: #c3d1dc; font-size: 15px; }
-.calc-total b { color: #fff; }
-.calc-result .btn { margin-top: auto; }
 
 /* ---------- Testimonials ---------- */
 .quotes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
@@ -412,13 +388,6 @@ em { font-style: normal; color: var(--copper); }
 .value h3 { margin-top: 14px; font-size: 18px; }
 .value p { margin-top: 8px; color: #c3d1dc; font-size: 14.5px; }
 
-.doc-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-.doc { padding: 24px; border-radius: var(--radius); background: #fff; border: 1px solid var(--line); }
-.doc h3 { display: flex; align-items: center; gap: 10px; font-size: 17px; }
-.doc h3 .icon { color: var(--copper); }
-.doc ul { display: grid; gap: 8px; margin: 14px 0 0; padding: 0; list-style: none; color: var(--muted); font-size: 15px; }
-.doc li { display: flex; gap: 8px; }
-.doc li::before { content: ""; flex: 0 0 6px; height: 6px; margin-top: 9px; border-radius: 50%; background: var(--steel); }
 
 /* ---------- Contact ---------- */
 .contact-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(28px, 5vw, 64px); align-items: start; }
@@ -487,7 +456,7 @@ a.contact-item:hover { border-color: var(--steel); }
   .trust-grid { grid-template-columns: 1fr 1fr; }
   .trust-item:nth-child(2) { border-right: 0; }
   .trust-item:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
-  .paths { grid-template-columns: 1fr; }
+  .paths, .paths.three { grid-template-columns: 1fr; }
   .steps { grid-template-columns: 1fr 1fr; }
   .step:nth-child(2)::after { display: none; }
   .features { grid-template-columns: 1fr 1fr; }
@@ -495,12 +464,10 @@ a.contact-item:hover { border-color: var(--steel); }
   .quotes { grid-template-columns: 1fr; }
   .faq-side { position: static; }
   .banner { grid-template-columns: 1fr; }
-  .calc { grid-template-columns: 1fr; }
   .filters { grid-template-columns: 1fr 1fr; }
   .filters .btn { grid-column: 1 / -1; }
   .values { grid-template-columns: 1fr 1fr; }
   .value:nth-child(3) { padding-left: 0; border-left: 0; }
-  .doc-list { grid-template-columns: 1fr 1fr; }
   .verify-media { max-width: 560px; }
   .split-media { max-width: 600px; }
 }
@@ -543,7 +510,6 @@ a.contact-item:hover { border-color: var(--steel); }
   .form-grid { grid-template-columns: 1fr; }
   .values { grid-template-columns: 1fr; }
   .value, .value + .value { padding: 22px 0; padding-left: 0; border-left: 0; border-bottom: 1px solid var(--line-dark); }
-  .doc-list { grid-template-columns: 1fr; }
   .compare th, .compare td { padding: 14px; font-size: 14px; }
   .compare { min-width: 560px; }
   .footer-main { grid-template-columns: 1fr; gap: 32px; }

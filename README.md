@@ -1,22 +1,22 @@
 # Asset Realty Group website
 
-Static multi-page website for Asset Realty Group (ARG), Greater Noida West. No build step: plain HTML, one stylesheet and one script.
+Static multi-page website for Asset Realty Group (ARG), Greater Noida West. ARG offers three services: **Buy**, **Sell** and **Partner**. No build step: plain HTML, one stylesheet and one script.
 
 ## Pages
 
 | File | Purpose |
 | --- | --- |
-| `index.html` | Home: hero search, buy/sell paths, featured listings, verification checklist, process, areas, EMI & valuation teasers, reviews, FAQs |
+| `index.html` | Home: hero search (Buy / Sell / Partner), service cards, featured listings, verification checklist, process, areas, partner & valuation teasers, reviews, FAQs |
 | `buy.html` | Filterable property listings (location, type, BHK, budget, sort) with "book a site visit" on WhatsApp |
 | `sell.html` | 3-step free valuation form, seller benefits, process, comparison table, FAQs |
-| `home-loans.html` | EMI calculator, loan assistance benefits, document checklist, FAQs |
+| `partner.html` | Partner programme for brokers, channel partners, developers and referral partners, with application form |
 | `about.html` | Story, values, services |
 | `contact.html` | Contact details, enquiry form, office map |
 
 Shared assets:
 
 - `assets/css/style.css` — design tokens and all styles (palette: slate `#243441`, steel blue `#347fb0`, copper `#d97745`, paper `#eff5fa`)
-- `assets/js/main.js` — mobile menu, scroll reveal, hero search, listings and filters, valuation stepper, EMI calculator, forms → WhatsApp
+- `assets/js/main.js` — mobile menu, scroll reveal, hero search, listings and filters, valuation stepper, forms → WhatsApp
 
 ## Editing content
 

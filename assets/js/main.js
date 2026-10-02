@@ -126,11 +126,7 @@
     heroSearch.addEventListener("submit", (e) => {
       const intent = intentInput.value;
       if (intent === "sell") { e.preventDefault(); location.href = "sell.html"; return; }
-      if (intent === "rent") {
-        e.preventDefault();
-        const f = new FormData(heroSearch);
-        openWhatsApp(`Hi ARG, I'm looking to rent a property.\nLocation: ${f.get("loc") || "Any"}\nType: ${f.get("type") || "Any"}\nBudget: ${f.get("budget") || "Any"}`);
-      }
+      if (intent === "partner") { e.preventDefault(); location.href = "partner.html"; }
     });
   }
 
@@ -200,30 +196,6 @@
       ].filter(Boolean).join("\n"));
     });
     show(0);
-  }
-
-  /* ---------- EMI calculator ---------- */
-  const calc = $("#emi-calc");
-  if (calc) {
-    const amount = $("#loan-amount"), rate = $("#loan-rate"), years = $("#loan-years");
-    const fill = (input) => input.style.setProperty("--fill", `${((input.value - input.min) / (input.max - input.min)) * 100}%`);
-    const update = () => {
-      const P = Number(amount.value) * 100000, r = Number(rate.value) / 1200, n = Number(years.value) * 12;
-      const emi = r ? (P * r * (1 + r) ** n) / ((1 + r) ** n - 1) : P / n;
-      const total = emi * n, interest = total - P;
-      $("#out-amount").textContent = priceLabel(Number(amount.value));
-      $("#out-rate").textContent = `${Number(rate.value).toFixed(2)}%`;
-      $("#out-years").textContent = `${years.value} years`;
-      $("#emi").textContent = inr(emi);
-      $("#principal").textContent = inr(P);
-      $("#interest").textContent = inr(interest);
-      $("#total").textContent = inr(total);
-      $(".donut-chart", calc).style.setProperty("--p", `${(P / total) * 100}%`);
-      [amount, rate, years].forEach(fill);
-    };
-    [amount, rate, years].forEach((i) => i.addEventListener("input", update));
-    $("#emi-cta")?.addEventListener("click", () => openWhatsApp(`Hi ARG, I'd like help with a home loan of about ${priceLabel(Number(amount.value))} for ${years.value} years.`));
-    update();
   }
 
   /* ---------- Generic enquiry forms → WhatsApp ---------- */
