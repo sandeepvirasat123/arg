@@ -317,7 +317,15 @@
     const box = rot.parentElement;
     const words = rot.dataset.words.split("|");
     let k = 0;
-    const fit = () => { box.style.width = `${rot.getBoundingClientRect().width}px`; };
+    // Reserve the width of the longest phrase so the headline never re-wraps when the word changes
+    const fit = () => {
+      const current = rot.textContent;
+      box.style.width = "auto";
+      const widest = Math.max(...words.map((w) => { rot.textContent = w; return box.getBoundingClientRect().width; }));
+      rot.textContent = current;
+      box.style.width = `${Math.ceil(widest)}px`;
+    };
+    fit();
     (document.fonts ? document.fonts.ready : Promise.resolve()).then(fit);
     addEventListener("resize", fit, { passive: true });
     setInterval(() => {
@@ -327,7 +335,6 @@
       setTimeout(() => {
         rot.classList.replace("out", "pre");
         rot.textContent = words[k];
-        fit();
         requestAnimationFrame(() => requestAnimationFrame(() => rot.classList.remove("pre")));
       }, 450);
     }, 2800);
