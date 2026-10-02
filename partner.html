@@ -85,7 +85,7 @@
 
     <section class="page-hero" style="--bg:url('https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=1400&q=55')">
       <div class="ph-deco" aria-hidden="true"><span class="blob b1"></span><span class="blob b2"></span><span class="grid-dots"></span><svg class="skyline sky-hero" viewBox="0 0 1440 150" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false"><path class="sky-outline" pathLength="1" d="M0 150 V62 H62 V147 V118 H82 V102 H86 V118 H106 V136 V103 H195 V142 V85 H249 V137 V74 H296 V149 V74 H379 V146 V123 H468 V142 V72 H536 V139 V108 H619 V149 V37 H670 V148 V115 H755 V147 V24 H820 V144 V45 H905 V145 V26 H963 V149 V93 H1028 V147 V79 H1109 V147 V18 H1184 V145 V34 H1275 V142 V55 H1313 V146 V69 H1362 V143 V73 H1440 V138 V150"/><path class="sky-windows" d="M51 74h5M9 90h5M51 90h5M9 106h5M9 122h5M37 122h5M115 115h5M157 115h5M171 131h5M218 97h5M218 113h5M204 129h5M218 129h5M272 86h5M258 102h5M272 102h5M319 86h5M361 86h5M305 102h5M319 102h5M333 102h5M347 102h5M361 102h5M305 118h5M319 118h5M333 134h5M347 134h5M416 135h5M444 135h5M477 84h5M477 100h5M491 100h5M505 100h5M519 100h5M491 116h5M519 132h5M642 49h5M656 81h5M642 97h5M628 113h5M642 113h5M656 113h5M707 127h5M778 36h5M792 36h5M764 52h5M778 52h5M806 52h5M764 68h5M806 68h5M764 84h5M778 84h5M806 84h5M764 100h5M778 100h5M764 116h5M778 116h5M792 116h5M764 132h5M778 132h5M843 57h5M857 57h5M885 57h5M829 89h5M829 105h5M857 105h5M885 105h5M829 121h5M857 121h5M942 70h5M928 86h5M942 86h5M914 134h5M928 134h5M972 105h5M1014 105h5M972 121h5M986 121h5M1014 121h5M1051 91h5M1065 91h5M1079 91h5M1079 107h5M1093 107h5M1037 123h5M1051 123h5M1079 123h5M1132 30h5M1146 30h5M1132 46h5M1146 46h5M1132 62h5M1146 78h5M1160 78h5M1118 94h5M1146 94h5M1132 110h5M1207 62h5M1235 62h5M1249 62h5M1263 78h5M1249 94h5M1263 94h5M1193 110h5M1235 110h5M1249 110h5M1263 110h5M1193 126h5M1207 126h5M1221 126h5M1263 126h5M1284 67h5M1298 67h5M1298 83h5M1284 99h5M1322 81h5M1371 85h5M1399 85h5M1371 101h5M1399 101h5M1371 117h5M1371 133h5M1385 133h5M1413 133h5"/></svg></div>
-      <div class="wrap ">
+      <div class="wrap page-hero-grid">
       <div>
         <nav class="crumbs anim" aria-label="Breadcrumb"><a href="index.html">Home</a><span aria-hidden="true">/</span><span>Partner</span></nav>
         <p class="eyebrow anim" style="--d:1">Partner with us</p>
@@ -94,6 +94,16 @@
         <div class="hero-stats"><span><svg class="icon" aria-hidden="true"><use href="#shield"/></svg>Verified inventory</span><span><svg class="icon" aria-hidden="true"><use href="#file"/></svg>Written terms</span><span><svg class="icon" aria-hidden="true"><use href="#handshake"/></svg>Closing support</span></div>
       </div>
       
+      <form class="form-card" id="connect" data-wa="Hi ARG, I'd like to connect about partnering with you." aria-label="Connect with our partner team">
+        <h2>Connect with our partner team</h2>
+        <p>Leave your name and number — we'll call you back within one working day.</p>
+        <div class="form-grid">
+          <div class="field full"><label for="p-name">Your name</label><input id="p-name" name="name" autocomplete="name" required minlength="2" placeholder="Full name"></div>
+          <div class="field full"><label for="p-phone">Mobile number</label><input id="p-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required pattern="[0-9+\s-]{10,15}" placeholder="10-digit mobile number"></div>
+        </div>
+        <button class="btn btn-copper btn-block" type="submit"><svg class="icon" aria-hidden="true"><use href="#wa"/></svg>Connect with us</button>
+        <p class="form-note"><svg class="icon" aria-hidden="true"><use href="#shield"/></svg>No joining fee. Your details are used only to contact you.</p>
+      </form>
     </div></section>
     <section class="section"><div class="wrap">
       <div class="section-head center reveal"><p class="eyebrow">Who we partner with</p><h2>Three ways to <em>work together</em></h2><p>Whatever your role in the market, there's a simple way to grow with ARG.</p></div>
@@ -122,33 +132,17 @@
     <section class="section"><div class="wrap">
       <div class="section-head center reveal"><p class="eyebrow">How it works</p><h2>Start partnering in <em>four steps</em></h2></div>
       <ol class="steps" data-stagger>
-        <li class="step reveal"><h3>Apply</h3><p>Share a few details about you or your business using the form below.</p></li>
+        <li class="step reveal"><h3>Connect</h3><p>Leave your name and number in the form at the top of this page, or call us.</p></li>
         <li class="step reveal"><h3>Meet the team</h3><p>A short call or office visit to understand how you work and what you need.</p></li>
         <li class="step reveal"><h3>Agree terms</h3><p>We put the partnership terms in writing, so everyone knows where they stand.</p></li>
         <li class="step reveal"><h3>Close together</h3><p>Share clients or inventory and we support every deal through to registry.</p></li>
       </ol>
     </div></section>
 
-    <section class="section bg-paper" id="apply"><div class="wrap split" style="align-items:start">
-      <div class="split-copy reveal"><p class="eyebrow">Apply now</p><h2>Let's grow <em>together</em></h2><p>Tell us a little about yourself and our partner team will get in touch within one working day.</p>
-        <ul class="ticks"><li><svg class="icon" aria-hidden="true"><use href="#check"/></svg><span><strong>No joining fee</strong>There's no cost to become an ARG partner.</span></li><li><svg class="icon" aria-hidden="true"><use href="#check"/></svg><span><strong>Any size welcome</strong>From independent agents to established firms and developers.</span></li></ul>
-        <a class="link" href="tel:+919217093330"><svg class="icon" aria-hidden="true"><use href="#phone"/></svg>Prefer to talk? Call +91 92170 93330</a></div>
-      <form class="form-card reveal" data-wa="Hi ARG, I'd like to become a partner." aria-label="Partner application">
-        <h2>Partner application</h2>
-        <p>We'll continue the conversation on WhatsApp.</p>
-        <div class="form-grid">
-          <div class="field full"><span style="font-weight:800;font-size:14px;color:var(--slate)">I am a</span>
-            <div class="choice-row" role="radiogroup" aria-label="I am a"><input type="radio" id="p-0" name="ptype" value="Broker / channel partner" data-label="Partner type" checked><label for="p-0">Broker / channel partner</label><input type="radio" id="p-1" name="ptype" value="Developer" data-label="Partner type"><label for="p-1">Developer</label><input type="radio" id="p-2" name="ptype" value="Referral partner" data-label="Partner type"><label for="p-2">Referral partner</label></div></div>
-          <div class="field"><label for="p-name">Your name</label><input id="p-name" name="name" autocomplete="name" required minlength="2" placeholder="Full name"></div>
-          <div class="field"><label for="p-phone">Mobile number</label><input id="p-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required pattern="[0-9+\s-]{10,15}" placeholder="10-digit number"></div>
-          <div class="field"><label for="p-company">Company / firm <span>(optional)</span></label><input id="p-company" name="company" autocomplete="organization" placeholder="e.g. Sharma Realtors"></div>
-          <div class="field"><label for="p-area">Main area</label><select id="p-area" name="area"><option value="">Across NCR</option><option>Greater Noida West</option><option>Noida</option><option>Greater Noida</option><option>Ghaziabad</option></select></div>
-          <div class="field full"><label for="p-msg">Tell us about your work <span>(optional)</span></label><textarea id="p-msg" name="message" maxlength="600" placeholder="Years in the market, projects, typical clients…"></textarea></div>
-        </div>
-        <button class="btn btn-copper btn-block" type="submit"><svg class="icon" aria-hidden="true"><use href="#wa"/></svg>Send application</button>
-        <p class="form-note"><svg class="icon" aria-hidden="true"><use href="#shield"/></svg>Your details are used only to respond to this application.</p>
-      </form>
-    </div></section>
+    <section class="section-tight"><div class="wrap"><div class="banner reveal">
+      <div><h2>Let's grow together</h2><p>No joining fee and no paperwork to start — just share your name and number and our partner team will call you.</p></div>
+      <div class="banner-actions"><a class="btn btn-copper" href="#connect">Connect with us <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></a><a class="btn btn-light" href="tel:+919217093330"><svg class="icon" aria-hidden="true"><use href="#phone"/></svg>+91 92170 93330</a></div>
+    </div></div></section>
 
     <section class="section bg-paper" id="faq"><div class="wrap faq-grid">
       <div class="faq-side reveal"><p class="eyebrow">Partner FAQs</p><h2>Partnering <em>questions</em></h2><p>What brokers, developers and referrers usually ask us.</p><a class="btn btn-dark" href="contact.html">Ask us anything <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></a></div>
