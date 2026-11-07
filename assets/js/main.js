@@ -1,13 +1,10 @@
 /* Asset Realty Group — shared site behaviour */
 (() => {
   const WA_NUMBER = "919217093330";
-  const IMG = (id, w = 900) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=80`;
-  const $ = (sel, root = document) => root.querySelector(sel);
+    const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
   const openWhatsApp = (text) => window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer");
-  const inr = (n) => "₹" + Math.round(n).toLocaleString("en-IN");
-  const priceLabel = (lakh) => lakh >= 100 ? `₹${Number((lakh / 100).toFixed(2))} Cr` : `₹${lakh} Lakh`;
-
+    
   document.documentElement.classList.add("js");
 
   /* ---------- Header & menu ---------- */
@@ -39,54 +36,8 @@
   const markLoaded = (e) => { if (e.target.tagName === "IMG" && e.target.closest(".card-media")) e.target.classList.add("loaded"); };
   document.addEventListener("load", markLoaded, true);
   document.addEventListener("error", markLoaded, true);
-
-  /* ---------- Sample inventory ----------
-     Representative listings for layout and filtering. Replace with live inventory when available. */
-  const LISTINGS = [
-    { id: "ARG-101", title: "3 BHK Apartment", type: "Residential", bhk: 3, loc: "Greater Noida West", sub: "Sector 1", price: 115, area: 1450, baths: 3, status: "Ready to move", img: "1545324418-cc1a3fa10c00" },
-    { id: "ARG-102", title: "2 BHK Apartment", type: "Residential", bhk: 2, loc: "Greater Noida West", sub: "Gaur City 2", price: 72, area: 1050, baths: 2, status: "Ready to move", img: "1502672260266-1c1ef2d93688" },
-    { id: "ARG-103", title: "Office Space", type: "Commercial", bhk: 0, loc: "Noida", sub: "Sector 62", price: 95, area: 980, baths: 1, status: "Ready to move", img: "1497366811353-6870744d04b2" },
-    { id: "ARG-104", title: "Residential Plot", type: "Plot", bhk: 0, loc: "Greater Noida", sub: "Yamuna Expressway", price: 125, area: 2250, baths: 0, status: "Registry ready", img: "1500382017468-9049fed747ef" },
-    { id: "ARG-105", title: "4 BHK Penthouse", type: "Residential", bhk: 4, loc: "Noida", sub: "Sector 150", price: 310, area: 3200, baths: 4, status: "Ready to move", img: "1600607687939-ce8a6c25118c" },
-    { id: "ARG-106", title: "2 BHK Apartment", type: "Residential", bhk: 2, loc: "Ghaziabad", sub: "Raj Nagar Extension", price: 58, area: 985, baths: 2, status: "Ready to move", img: "1522708323590-d24dbb6b0267" },
-    { id: "ARG-107", title: "Retail Shop", type: "Commercial", bhk: 0, loc: "Greater Noida West", sub: "Techzone 4", price: 64, area: 420, baths: 1, status: "Under construction", img: "1486406146926-c627a92ad1ab" },
-    { id: "ARG-108", title: "3 BHK Apartment", type: "Residential", bhk: 3, loc: "Greater Noida West", sub: "Bisrakh", price: 88, area: 1320, baths: 2, status: "Under construction", img: "1493809842364-78817add7ffb" },
-    { id: "ARG-109", title: "Independent Villa", type: "Residential", bhk: 4, loc: "Greater Noida", sub: "Omega 1", price: 245, area: 2700, baths: 4, status: "Ready to move", img: "1613490493576-7fde63acd811" },
-    { id: "ARG-110", title: "1 BHK Studio", type: "Residential", bhk: 1, loc: "Noida", sub: "Sector 75", price: 42, area: 620, baths: 1, status: "Ready to move", img: "1484154218962-a197022b5858" },
-    { id: "ARG-111", title: "Commercial Office Floor", type: "Commercial", bhk: 0, loc: "Noida", sub: "Sector 132", price: 420, area: 5400, baths: 4, status: "Ready to move", img: "1554469384-e58fac16e23a" },
-    { id: "ARG-112", title: "3 BHK Apartment", type: "Residential", bhk: 3, loc: "Ghaziabad", sub: "Indirapuram", price: 135, area: 1600, baths: 3, status: "Ready to move", img: "1600566753190-17f0baa2a6c3" },
-    { id: "ARG-113", title: "2 BHK Apartment", type: "Residential", bhk: 2, loc: "Greater Noida West", sub: "Sector 16B", price: 68, area: 1080, baths: 2, status: "Ready to move", img: "1515263487990-61b07816b324" },
-    { id: "ARG-114", title: "2 BHK Apartment", type: "Residential", bhk: 2, loc: "Noida", sub: "Sector 137", price: 78, area: 1125, baths: 2, status: "Under construction", img: "1556909114-f6e7ad7d3136" },
-    { id: "ARG-115", title: "3 BHK Apartment", type: "Residential", bhk: 3, loc: "Noida", sub: "Sector 76", price: 145, area: 1650, baths: 3, status: "Ready to move", img: "1574362848149-11496d93a7c7" },
-    { id: "ARG-116", title: "4 BHK Apartment", type: "Residential", bhk: 4, loc: "Greater Noida West", sub: "Gaur City 1", price: 165, area: 2150, baths: 4, status: "Ready to move", img: "1460317442991-0ec209397118" },
-    { id: "ARG-117", title: "4 BHK Builder Floor", type: "Residential", bhk: 4, loc: "Ghaziabad", sub: "Indirapuram", price: 190, area: 2400, baths: 4, status: "Ready to move", img: "1600596542815-ffad4c1539a9" },
-  ];
-
-  const cardHTML = (p, i = 0) => {
-    const specs = [
-      p.bhk ? `<span><svg class="icon"><use href="#bed"/></svg>${p.bhk} BHK</span>` : "",
-      p.baths && p.type === "Residential" ? `<span><svg class="icon"><use href="#bath"/></svg>${p.baths} Bath</span>` : "",
-      `<span><svg class="icon"><use href="#area"/></svg>${p.area.toLocaleString("en-IN")} sq.ft</span>`,
-    ].join("");
-    const msg = `Hi ARG, I'd like to know more about ${p.title} in ${p.sub}, ${p.loc} (Ref ${p.id}, ${priceLabel(p.price)}). Can we schedule a site visit?`;
-    return `<article class="card pop" style="--i:${i}">
-      <div class="card-media">
-        <img src="${IMG(p.img, 700)}" srcset="${[400, 700, 1000].map((w) => `${IMG(p.img, w)} ${w}w`).join(", ")}" sizes="(max-width: 700px) 100vw, (max-width: 1100px) 33vw, 25vw" decoding="async" alt="${p.title} in ${p.sub}, ${p.loc}" width="700" height="525" loading="lazy">
-        <span class="pill pill-verified"><svg class="icon"><use href="#shield"/></svg>ARG Verified</span>
-        <span class="card-type">${p.status}</span>
-      </div>
-      <div class="card-body">
-        <p class="card-price">${priceLabel(p.price)} <small>· ${inr(p.price * 100000 / p.area)}/sq.ft</small></p>
-        <h3 class="card-title">${p.title}</h3>
-        <p class="card-loc"><svg class="icon"><use href="#pin"/></svg>${p.sub}, ${p.loc}</p>
-        <div class="card-specs">${specs}</div>
-        <div class="card-actions">
-          <a class="btn btn-dark" href="https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">Book a site visit</a>
-          <button class="icon-btn" type="button" aria-pressed="false" aria-label="Shortlist ${p.title} in ${p.sub}" data-shortlist="${p.id}"><svg class="icon"><use href="#heart"/></svg></button>
-        </div>
-      </div>
-    </article>`;
-  };
+  // Images already rendered by the server may finish before this script runs
+  $$(".card-media img").forEach((img) => { if (img.complete) img.classList.add("loaded"); });
 
   /* Shortlist hearts (per visitor, browser only) */
   const readShortlist = () => { try { return JSON.parse(localStorage.getItem("arg-shortlist") || "[]"); } catch { return []; } };
@@ -106,25 +57,33 @@
     toast(next.includes(id) ? "♥  Saved to your shortlist" : "Removed from your shortlist");
   });
 
-  /* ---------- Home: featured listings with tabs ---------- */
+  /* ---------- Home: latest listings, from the site's own cached feed ---------- */
   const featured = $("#featured-grid");
   if (featured) {
     const more = $("#featured-more");
-    const homes = LISTINGS.filter((p) => p.type === "Residential");
-    // "All homes" shows one of each size; the BHK tabs filter by bedrooms (4 = 4 BHK and larger)
+    let rows = [];
     const render = (bhk) => {
-      const list = bhk === "all"
-        ? ["ARG-102", "ARG-101", "ARG-105", "ARG-108"].map((id) => homes.find((p) => p.id === id))
-        : homes.filter((p) => (bhk === "4" ? p.bhk >= 4 : p.bhk === Number(bhk)));
-      featured.innerHTML = list.slice(0, 4).map(cardHTML).join("");
+      const list = bhk === "all" ? rows : rows.filter((p) => (bhk === "4" ? p.bhk >= 4 : Math.floor(p.bhk) === Number(bhk)));
+      featured.innerHTML = list.length
+        ? list.slice(0, 4).map((p) => p.html).join("")
+        : `<div class="empty"><strong>No ${bhk === "4" ? "4+" : bhk} BHK homes listed right now</strong>Tell us what you need and we will look for options for you.<br><br><a class="btn btn-copper btn-sm" href="contact">Share your requirement</a></div>`;
       syncHearts(featured);
-      if (more) more.href = `buy?type=Residential${bhk === "all" ? "" : `&bhk=${bhk}`}`;
+      if (more) more.href = bhk === "all" ? "buy" : `buy?bhk=${bhk}`;
     };
     $$("[data-featured]").forEach((tab) => tab.addEventListener("click", () => {
       $$("[data-featured]").forEach((t) => t.setAttribute("aria-selected", String(t === tab)));
       render(tab.dataset.featured);
     }));
-    render("all");
+    fetch("api/inventory.php", { headers: { Accept: "application/json" } })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data.ok) throw new Error("unavailable");
+        rows = data.rows;
+        render("all");
+      })
+      .catch(() => {
+        featured.innerHTML = `<div class="empty"><strong>We could not load properties just now</strong>Please see the Buy page, or call +91 92170 93330.<br><br><a class="btn btn-copper btn-sm" href="buy">Go to the Buy page</a></div>`;
+      });
   }
 
   /* ---------- Home: hero search tabs ---------- */
@@ -147,44 +106,36 @@
     }));
     heroSearch.addEventListener("submit", (e) => {
       const intent = intentInput.value;
-      if (intent === "sell") { e.preventDefault(); location.href = "sell"; return; }
-      if (intent === "partner") {
-        e.preventDefault();
-        openWhatsApp(`Hi ARG, I'd like to connect about partnering with you.\nYour name: ${$("#s-name").value.trim()}\nMobile number: ${$("#s-phone").value.trim()}`);
-        toast("Thanks! Our partner team will be in touch.");
-      }
+      if (intent === "sell") { e.preventDefault(); location.href = "sell"; }
     });
   }
 
-  /* ---------- Buy page: filters ---------- */
-  const results = $("#results");
-  if (results) {
-    const form = $("#filters");
-    const count = $("#result-count");
-    const sort = $("#sort");
-    const params = new URLSearchParams(location.search);
-    ["loc", "type", "bhk", "budget"].forEach((k) => { if (params.get(k) && form.elements[k]) form.elements[k].value = params.get(k); });
-
-    const apply = () => {
-      const f = new FormData(form);
-      const [min, max] = (f.get("budget") || "0-100000").split("-").map(Number);
-      let list = LISTINGS.filter((p) =>
-        (!f.get("loc") || p.loc === f.get("loc")) &&
-        (!f.get("type") || p.type === f.get("type")) &&
-        (!f.get("bhk") || (f.get("bhk") === "4" ? p.bhk >= 4 : p.bhk === Number(f.get("bhk")))) &&
-        p.price >= min && p.price <= max);
-      if (sort.value === "low") list = list.sort((a, b) => a.price - b.price);
-      if (sort.value === "high") list = list.sort((a, b) => b.price - a.price);
-      if (sort.value === "area") list = list.sort((a, b) => b.area - a.area);
-      count.textContent = list.length;
-      results.innerHTML = list.length ? list.map(cardHTML).join("") :
-        `<div class="empty"><strong>No matching homes in our current shortlist</strong>Tell us what you need and we'll search off-market options for you.<br><br><a class="btn btn-copper btn-sm" href="contact">Share your requirement</a></div>`;
-      syncHearts(results);
+  /* ---------- Buy page: filters run on the server, this keeps URLs tidy and applies changes at once ---------- */
+  const filterForm = $("#filters");
+  if (filterForm) {
+    const go = () => {
+      const params = new URLSearchParams();
+      new FormData(filterForm).forEach((value, key) => { if (value) params.set(key, value); });
+      const query = params.toString();
+      location.href = `buy${query ? `?${query}` : ""}`;
     };
-    form.addEventListener("submit", (e) => { e.preventDefault(); apply(); results.scrollIntoView({ behavior: "smooth", block: "start" }); });
-    form.addEventListener("change", apply);
-    sort.addEventListener("change", apply);
-    apply();
+    filterForm.addEventListener("submit", (e) => { e.preventDefault(); go(); });
+    filterForm.addEventListener("change", go);
+    $("#sort")?.addEventListener("change", go);
+    syncHearts(document);
+  }
+  if ($(".property-page")) syncHearts(document);
+
+  /* ---------- Property page: photo gallery ---------- */
+  const galleryMain = $("#gallery-main");
+  if (galleryMain) {
+    const thumbs = $$("[data-gallery-thumb]");
+    thumbs.forEach((thumb, i) => thumb.addEventListener("click", (e) => {
+      e.preventDefault();
+      galleryMain.src = thumb.href;
+      galleryMain.alt = galleryMain.alt.replace(/photo \d+$/, `photo ${i + 1}`);
+      thumbs.forEach((t) => (t === thumb ? t.setAttribute("aria-current", "true") : t.removeAttribute("aria-current")));
+    }));
   }
 
   /* ---------- Sell page: 3-step valuation ---------- */
@@ -235,6 +186,200 @@
     });
     openWhatsApp(lines.join("\n"));
   }));
+
+  /* ---------- Channel Partner programme page ---------- */
+  // Analytics: events go to window.dataLayer only, and never include form values.
+  // No analytics tag is loaded by this site; any tag added later must respect visitor consent.
+  const track = (event, details = {}) => {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ event, ...details });
+  };
+  document.addEventListener("click", (e) => {
+    const el = e.target.closest("[data-track]");
+    if (el) track(el.dataset.track, { location: el.dataset.trackLoc || "page" });
+  });
+
+  // Section navigation: highlight the section being read
+  const subnavLinks = $$(".cp-subnav a[href^='#']");
+  if (subnavLinks.length && "IntersectionObserver" in window) {
+    const setCurrent = (id) => subnavLinks.forEach((a) => {
+      const on = a.getAttribute("href") === `#${id}`;
+      if (on) {
+        a.setAttribute("aria-current", "true");
+        const list = a.closest(".cp-subnav-links");
+        list?.scrollTo({ left: a.offsetLeft - 16 }); // keep the current link visible on phones, without moving the page
+      } else a.removeAttribute("aria-current");
+    });
+    const spy = new IntersectionObserver((entries) => entries.forEach((entry) => {
+      if (entry.isIntersecting) setCurrent(entry.target.id);
+    }), { rootMargin: "-30% 0px -65% 0px" });
+    subnavLinks.forEach((a) => { const target = $(a.getAttribute("href")); if (target) spy.observe(target); });
+    const top = $(".cp-hero");
+    if (top) new IntersectionObserver(([entry]) => { if (entry.isIntersecting) setCurrent(""); }).observe(top);
+  }
+
+  // "See how it works" tabs (arrow keys move between tabs, as screen reader users expect)
+  const journeyTabs = $$("[data-journey-tab]");
+  if (journeyTabs.length) {
+    const select = (tab, focus) => {
+      journeyTabs.forEach((t) => {
+        const on = t === tab;
+        t.setAttribute("aria-selected", String(on));
+        t.tabIndex = on ? 0 : -1;
+        $(`#${t.getAttribute("aria-controls")}`).hidden = !on;
+      });
+      if (focus) tab.focus();
+    };
+    journeyTabs.forEach((tab, i) => {
+      tab.addEventListener("click", () => { select(tab); track("cp_journey_tab", { tab: tab.dataset.journeyTab }); });
+      tab.addEventListener("keydown", (e) => {
+        if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+        e.preventDefault();
+        const step = e.key === "ArrowRight" ? 1 : -1;
+        select(journeyTabs[(i + step + journeyTabs.length) % journeyTabs.length], true);
+      });
+    });
+    select(journeyTabs[0]);
+  }
+
+  $$(".cp-page .faq summary").forEach((summary, i) => summary.addEventListener("click", () => {
+    if (!summary.parentElement.open) track("cp_faq_open", { question: i + 1 });
+  }));
+
+  // The one Channel Partner enquiry form
+  const cpForm = $("#cp-form");
+  if (cpForm) {
+    const alertBox = $("#cp-alert");
+    const submitBtn = $("button[type=submit]", cpForm);
+    const firmField = $("#cp-firm-field");
+    const field = (name) => cpForm.elements[name];
+    const errorEl = (name) => $(`#cp-err-${name}`);
+    let firstTouch = 0;
+
+    const setError = (name, message) => {
+      const el = errorEl(name);
+      el.textContent = message || "";
+      el.hidden = !message;
+      const control = field(name);
+      (control instanceof RadioNodeList ? [...control] : [control]).forEach((c) => {
+        if (message) c.setAttribute("aria-invalid", "true"); else c.removeAttribute("aria-invalid");
+      });
+    };
+    const mobileDigits = (value) => value.replace(/\D/g, "").replace(/^(?:91|0)(?=\d{10}$)/, "");
+    const rules = {
+      full_name: () => (/^[\p{L}\p{M} .'-]{2,}$/u.test(field("full_name").value.trim()) ? "" : "Please enter your full name."),
+      mobile: () => (/^[6-9]\d{9}$/.test(mobileDigits(field("mobile").value)) ? "" : "Please enter a valid 10-digit Indian mobile number."),
+      city_area: () => (field("city_area").value.trim().length >= 2 ? "" : "Please enter your city or area."),
+      email: () => { const v = field("email").value.trim(); return !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? "" : "Please enter a valid email address, or leave it blank."; },
+      interest: () => (field("interest").value ? "" : "Please choose how you would like to collaborate."),
+      consent: () => (field("consent").checked ? "" : "Please confirm that ARG may contact you about this enquiry."),
+    };
+    const validate = () => {
+      let first = null;
+      Object.entries(rules).forEach(([name, rule]) => {
+        const message = rule();
+        setError(name, message);
+        if (message) {
+          track("cp_form_validation_error", { field: name });
+          first = first || name;
+        }
+      });
+      if (first) {
+        const control = field(first);
+        (control instanceof RadioNodeList ? control[0] : control).focus();
+      }
+      return !first;
+    };
+
+    // Re-check a field when the visitor leaves it, once it has been flagged or filled in
+    ["full_name", "mobile", "city_area", "email"].forEach((name) => field(name).addEventListener("blur", () => {
+      if (field(name).value || !errorEl(name).hidden) setError(name, rules[name]());
+    }));
+    cpForm.addEventListener("change", (e) => {
+      if (e.target.name === "interest" || e.target.name === "consent") setError(e.target.name, rules[e.target.name]());
+    });
+    cpForm.addEventListener("focusin", () => {
+      if (!firstTouch) { firstTouch = performance.now(); track("cp_form_start"); }
+    });
+
+    const syncFirm = () => { firmField.hidden = field("applicant_type").value !== "Firm"; };
+    $$("input[name=applicant_type]", cpForm).forEach((el) => el.addEventListener("change", syncFirm));
+    syncFirm();
+
+    // Activity cards and links can pre-select the interest. It is the same form either way.
+    const preselect = (value) => {
+      const radio = $(`input[name=interest][value="${value}"]`, cpForm);
+      if (radio) { radio.checked = true; setError("interest", ""); }
+    };
+    document.addEventListener("click", (e) => {
+      const link = e.target.closest("[data-interest]");
+      if (link) preselect(link.dataset.interest);
+    });
+    const query = new URLSearchParams(location.search);
+    if (query.get("interest")) preselect(query.get("interest"));
+
+    const whatsappMessage = () => [
+      "Hi ARG, I'd like to become an ARG Channel Partner.",
+      `Name: ${field("full_name").value.trim()}`,
+      `Mobile: ${field("mobile").value.trim()}`,
+      `City / area: ${field("city_area").value.trim()}`,
+      `Applying as: ${field("applicant_type").value}`,
+      field("interest").value ? `Interested in: ${$(`input[name=interest]:checked + label strong`, cpForm).textContent}` : "",
+    ].filter(Boolean).join("\n");
+    const showAlert = (message) => {
+      $("[data-alert-text]", alertBox).textContent = message;
+      $("a", alertBox).href = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(whatsappMessage())}`;
+      alertBox.hidden = false;
+      alertBox.focus();
+    };
+
+    cpForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (submitBtn.disabled) return;
+      alertBox.hidden = true;
+      if (!validate()) return;
+
+      const data = new FormData(cpForm);
+      data.set("started", Math.round(performance.now() - firstTouch));
+      data.set("src_page", location.pathname);
+      ["utm_source", "utm_medium", "utm_campaign"].forEach((key) => { if (query.get(key)) data.set(`src_${key}`, query.get(key)); });
+
+      submitBtn.disabled = true;
+      submitBtn.setAttribute("aria-busy", "true");
+      $("span", submitBtn).textContent = "Sending your enquiry…";
+      track("cp_form_submit_attempt", { interest: field("interest").value });
+      const timeout = new AbortController();
+      const timer = setTimeout(() => timeout.abort(), 15000);
+      try {
+        const res = await fetch(cpForm.action, { method: "POST", body: data, headers: { Accept: "application/json" }, signal: timeout.signal });
+        const body = await res.json();
+        if (body.ok) {
+          track("cp_form_submit_success", { interest: field("interest").value });
+          cpForm.hidden = true;
+          const success = $("#cp-success");
+          success.hidden = false;
+          success.focus();
+          return;
+        }
+        if (body.errors) {
+          Object.entries(body.errors).forEach(([name, message]) => { if (errorEl(name)) setError(name, message); });
+          track("cp_form_submit_error", { reason: "validation" });
+          showAlert("Please check the highlighted details and try again.");
+        } else {
+          track("cp_form_submit_error", { reason: `http_${res.status}` });
+          showAlert(body.message || "We could not send your enquiry just now. Your details are still here, so you can try again or send them on WhatsApp.");
+        }
+      } catch {
+        track("cp_form_submit_error", { reason: "network" });
+        showAlert("We could not send your enquiry just now. Your details are still here, so you can try again or send them on WhatsApp.");
+      } finally {
+        clearTimeout(timer);
+        submitBtn.disabled = false;
+        submitBtn.removeAttribute("aria-busy");
+        $("span", submitBtn).textContent = "Submit my CP enquiry";
+      }
+    });
+  }
 
   /* =====================================================================
      Motion & interaction

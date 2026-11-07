@@ -1,13 +1,28 @@
-# Clean URLs for Apache / Hostinger: /buy serves buy.html, and old /buy.html links redirect to /buy
+# Clean URLs for Apache / Hostinger: /about serves about.html, and old /about.html links redirect to /about
 Options -MultiViews
 RewriteEngine On
+
+# Keep server config and internal notes private
+RewriteRule ^(includes/|dev-router\.php$|api/config(\.example)?\.php$|README\.md$|ARG_PARTNER_WEBSITE_PROGRESS\.md$) - [F,L]
 
 # Old links: /page.html -> /page (permanent redirect, keeps any ?query)
 RewriteCond %{THE_REQUEST} \s/+([^?\s]*?)\.html[\s?] [NC]
 RewriteRule ^ /%1 [R=301,L,NE]
 
+# /page/ -> /page, so one address per page and relative CSS paths keep working
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.+)/$ /$1 [R=301,L]
+
 # /index -> /
 RewriteRule ^index/?$ / [R=301,L]
+
+# Live property pages, rendered by PHP
+RewriteCond %{THE_REQUEST} \s/+buy\.php[\s?] [NC]
+RewriteRule ^ /buy [R=301,L,QSA]
+RewriteRule ^buy/?$ buy.php [L,QSA]
+RewriteRule ^property/?$ /buy [R=301,L]
+RewriteRule ^property/([A-Za-z0-9-]+)/?$ property.php?slug=$1 [L,QSA]
+RewriteRule ^sitemap\.xml$ sitemap.php [L]
 
 # Serve /page from page.html when that file exists
 RewriteCond %{REQUEST_FILENAME} !-d

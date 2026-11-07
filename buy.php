@@ -1,29 +1,67 @@
+<?php
+declare(strict_types=1);
+require __DIR__ . '/includes/inventory.php';
+
+$all = arg_inventory();
+$down = $all === null;
+$list = $all ?? [];
+
+// Filters come from the URL, so they work without JavaScript and links from other pages just work
+$loc = is_string($_GET['loc'] ?? null) ? $_GET['loc'] : '';
+$bhk = is_string($_GET['bhk'] ?? null) ? $_GET['bhk'] : '';
+$budget = is_string($_GET['budget'] ?? null) ? $_GET['budget'] : '';
+$sort = is_string($_GET['sort'] ?? null) ? $_GET['sort'] : '';
+$cities = array_values(array_unique(array_merge(['Greater Noida West', 'Noida', 'Greater Noida', 'Ghaziabad'], array_column($list, 'city'))));
+[$min, $max] = preg_match('/^(\d+)-(\d+)$/', $budget, $m) ? [(int) $m[1] * 100000, (int) $m[2] * 100000] : [0, PHP_INT_MAX];
+$matches = array_values(array_filter($list, function ($p) use ($loc, $bhk, $min, $max) {
+    return ($loc === '' || $p['city'] === $loc)
+        && ($bhk === '' || ($bhk === '4' ? $p['bhk'] >= 4 : (int) floor($p['bhk']) === (int) $bhk))
+        && $p['price'] >= $min && $p['price'] <= $max;
+}));
+$sorters = [
+    'low' => function ($a, $b) { return $a['price'] <=> $b['price']; },
+    'high' => function ($a, $b) { return $b['price'] <=> $a['price']; },
+    'area' => function ($a, $b) { return $b['area'] <=> $a['area']; },
+];
+if (isset($sorters[$sort])) {
+    usort($matches, $sorters[$sort]);
+}
+$perPage = (int) arg_config()['per_page'];
+$pages = max(1, (int) ceil(count($matches) / $perPage));
+$page = min($pages, max(1, (int) ($_GET['page'] ?? 1)));
+$shown = array_slice($matches, ($page - 1) * $perPage, $perPage);
+$pageUrl = function (int $n) { return 'buy?' . http_build_query(array_filter(array_merge(array_intersect_key($_GET, array_flip(['loc', 'bhk', 'budget', 'sort'])), ['page' => $n > 1 ? $n : null]))); };
+$opt = function (string $value, string $label, string $current) { return '<option value="' . e($value) . '"' . ($value === $current ? ' selected' : '') . '>' . e($label) . '</option>'; };
+if ($down) {
+    header('Cache-Control: no-store');
+}
+?>
 <!doctype html>
 <html lang="en-IN">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Buy Verified Property in Greater Noida West & NCR | ARG</title>
-  <meta name="description" content="Browse ARG Verified apartments, villas, commercial spaces and plots across Greater Noida West, Noida, Greater Noida and Ghaziabad. Book a site visit in a tap.">
-  <meta name="theme-color" content="#243441">
+  <title>Flats and Apartments for Sale in Noida &amp; Greater Noida West | ARG</title>
+  <meta name="description" content="Browse current flats and apartments for sale in Noida, Greater Noida and Greater Noida West with Asset Realty Group. See prices and book a site visit.">
+  <meta name="theme-color" content="#26626a">
   <link rel="canonical" href="https://assetrealtygroup.in/buy">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Asset Realty Group">
-  <meta property="og:title" content="Buy Verified Property in Greater Noida West & NCR | ARG">
-  <meta property="og:description" content="Browse ARG Verified apartments, villas, commercial spaces and plots across Greater Noida West, Noida, Greater Noida and Ghaziabad. Book a site visit in a tap.">
+  <meta property="og:title" content="Flats and Apartments for Sale in Noida &amp; Greater Noida West | ARG">
+  <meta property="og:description" content="Browse current flats and apartments for sale in Noida, Greater Noida and Greater Noida West with Asset Realty Group. See prices and book a site visit.">
   <meta property="og:url" content="https://assetrealtygroup.in/buy">
   <meta property="og:image" content="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1600&q=80">
-  <link rel="icon" href="https://propertyplusrealtors.com/logo.jpeg">
+  <link rel="icon" href="assets/img/arg-logo.jpeg">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://images.unsplash.com">
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Manrope:wght@400;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Manrope:wght@400;600;700;800&display=swap"></noscript>
   
   <link rel="preload" as="image" href="https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=1400&q=55" fetchpriority="high">
   <link rel="stylesheet" href="assets/css/style.css">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"RealEstateAgent","name":"Asset Realty Group","alternateName":"ARG","url":"https://assetrealtygroup.in/","telephone":"+91-9217093330","email":"info@assetrealtygroup.in","image":"https://propertyplusrealtors.com/logo.jpeg","openingHours":"Mo-Su 09:30-19:30","address":{"@type":"PostalAddress","streetAddress":"Office No. T-39B, 3rd Floor, Galaxy Blue Sapphire Plaza","addressLocality":"Greater Noida West","addressRegion":"Uttar Pradesh","postalCode":"201306","addressCountry":"IN"},"areaServed":["Greater Noida West","Noida","Greater Noida","Ghaziabad","Delhi NCR"]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"RealEstateAgent","name":"Asset Realty Group","alternateName":"ARG","url":"https://assetrealtygroup.in/","telephone":"+91-9217093330","email":"info@assetrealtygroup.in","image":"https://assetrealtygroup.in/assets/img/arg-logo.jpeg","openingHours":"Mo-Su 09:30-19:30","address":{"@type":"PostalAddress","streetAddress":"Office No. T-39B, 3rd Floor, Galaxy Blue Sapphire Plaza","addressLocality":"Greater Noida West","addressRegion":"Uttar Pradesh","postalCode":"201306","addressCountry":"IN"},"areaServed":["Greater Noida West","Noida","Greater Noida","Ghaziabad","Delhi NCR"]}</script>
   <script src="assets/js/main.js" defer></script>
 </head>
-<body>
+<body class="buy-page">
   <div class="progress" aria-hidden="true"><span></span></div>
   <a class="skip" href="#main">Skip to content</a>
   <svg class="icons" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -67,7 +105,7 @@
   </div></div>
   <header class="site-header"><div class="wrap head">
     <a class="brand" href="./" aria-label="Asset Realty Group — home">
-      <img src="https://propertyplusrealtors.com/logo.jpeg" alt="" width="52" height="52">
+      <img src="assets/img/arg-logo.jpeg" alt="" width="52" height="52">
       <span class="brand-text"><strong>Asset Realty Group</strong><small>YOUR PROPERTY, OUR PRIORITY</small></span>
     </a>
     <button class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-nav"><svg class="icon open-i" aria-hidden="true"><use href="#menu"/></svg><svg class="icon close-i" aria-hidden="true"><use href="#close"/></svg></button>
@@ -89,24 +127,36 @@
       <div>
         <nav class="crumbs anim" aria-label="Breadcrumb"><a href="./">Home</a><span aria-hidden="true">/</span><span>Buy</span></nav>
         <p class="eyebrow anim" style="--d:1">Buy a property</p>
-        <h1 class="anim" style="--d:2">Verified homes and spaces, <em>ready to explore</em></h1>
-        <p class="lead anim" style="--d:3">Browse properties our team has already checked for title, approvals and fair pricing. Filter by area, type and budget — then book a visit in a tap.</p>
-        <div class="hero-stats"><span><svg class="icon" aria-hidden="true"><use href="#shield"/></svg>Documents reviewed</span><span><svg class="icon" aria-hidden="true"><use href="#eye"/></svg>Inspected in person</span><span><svg class="icon" aria-hidden="true"><use href="#tag"/></svg>Price benchmarked</span></div>
+        <h1 class="anim" style="--d:2">Properties for sale, <em>ready to explore</em></h1>
+        <p class="lead anim" style="--d:3">Browse current listings across Noida, Greater Noida and Greater Noida West. Filter by area, size and budget, then open any property for its full details.</p>
+        <div class="hero-stats"><span><svg class="icon" aria-hidden="true"><use href="#home"/></svg>Current listings</span><span><svg class="icon" aria-hidden="true"><use href="#key"/></svg>Book a site visit</span><span><svg class="icon" aria-hidden="true"><use href="#users"/></svg>Local team</span></div>
       </div>
       
     </div></section>
     <section class="section" style="padding-top:0"><div class="wrap">
-      <form class="filters" id="filters" aria-label="Filter properties">
-        <div class="search-field"><label for="f-loc">Location</label><select id="f-loc" name="loc"><option value="">All of NCR</option><option>Greater Noida West</option><option>Noida</option><option>Greater Noida</option><option>Ghaziabad</option></select></div>
-        <div class="search-field"><label for="f-type">Property type</label><select id="f-type" name="type"><option value="">Any type</option><option value="Residential">Apartment / Villa</option><option value="Commercial">Office / Shop</option><option value="Plot">Plot / Land</option></select></div>
-        <div class="search-field"><label for="f-bhk">Bedrooms</label><select id="f-bhk" name="bhk"><option value="">Any</option><option value="1">1 BHK</option><option value="2">2 BHK</option><option value="3">3 BHK</option><option value="4">4+ BHK</option></select></div>
-        <div class="search-field"><label for="f-budget">Budget</label><select id="f-budget" name="budget"><option value="">Any budget</option><option value="0-50">Under ₹50 Lakh</option><option value="50-80">₹50 – 80 Lakh</option><option value="80-120">₹80 Lakh – 1.2 Cr</option><option value="120-200">₹1.2 – 2 Cr</option><option value="200-100000">Above ₹2 Cr</option></select></div>
+      <form class="filters" id="filters" action="buy" method="get" aria-label="Filter properties">
+        <div class="search-field"><label for="f-loc">Location</label><select id="f-loc" name="loc"><?= $opt('', 'All locations', $loc) ?><?php foreach ($cities as $c) { echo $opt($c, $c, $loc); } ?></select></div>
+        <div class="search-field"><label for="f-bhk">Bedrooms</label><select id="f-bhk" name="bhk"><?= $opt('', 'Any', $bhk) . $opt('1', '1 BHK', $bhk) . $opt('2', '2 BHK', $bhk) . $opt('3', '3 BHK', $bhk) . $opt('4', '4+ BHK', $bhk) ?></select></div>
+        <div class="search-field"><label for="f-budget">Budget</label><select id="f-budget" name="budget"><?= $opt('', 'Any budget', $budget) . $opt('0-50', 'Under ₹50 Lakh', $budget) . $opt('50-80', '₹50 – 80 Lakh', $budget) . $opt('80-120', '₹80 Lakh – 1.2 Cr', $budget) . $opt('120-200', '₹1.2 – 2 Cr', $budget) . $opt('200-100000', 'Above ₹2 Cr', $budget) ?></select></div>
         <button class="btn btn-copper" type="submit"><svg class="icon" aria-hidden="true"><use href="#search"/></svg>Search</button>
       </form>
-      <div class="results-bar"><p><strong id="result-count">0</strong> verified properties match your search</p>
-        <label class="sort" for="sort">Sort by <select id="sort"><option value="">Recommended</option><option value="low">Price: low to high</option><option value="high">Price: high to low</option><option value="area">Largest area</option></select></label></div>
-      <div class="listing-grid three" id="results" aria-live="polite"></div>
-      <p class="note">Listings are representative of the inventory we work with. Prices and availability change frequently — our team will confirm current details before your visit.</p>
+      <div class="results-bar"><p><strong id="result-count"><?= count($matches) ?></strong> <?= count($matches) === 1 ? 'property matches' : 'properties match' ?> your search</p>
+        <label class="sort" for="sort">Sort by <select id="sort" name="sort" form="filters"><?= $opt('', 'Newest first', $sort) . $opt('low', 'Price: low to high', $sort) . $opt('high', 'Price: high to low', $sort) . $opt('area', 'Largest area', $sort) ?></select></label></div>
+      <div class="listing-grid three" id="results">
+        <?php if ($down): ?>
+        <div class="empty"><strong>We could not load properties just now</strong>Please try again shortly, or call <a href="tel:+919217093330">+91 92170 93330</a> and we will share current options.</div>
+        <?php elseif (!$shown): ?>
+        <div class="empty"><strong>No matching properties right now</strong>Tell us what you need and we will look for options for you.<br><br><a class="btn btn-copper btn-sm" href="contact">Share your requirement</a></div>
+        <?php else: foreach ($shown as $i => $p) { echo arg_card_html($p, $i); } endif; ?>
+      </div>
+      <?php if ($pages > 1): ?>
+      <nav class="pager" aria-label="Pages of properties">
+        <?php if ($page > 1): ?><a class="btn btn-ghost btn-sm" rel="prev" href="<?= e($pageUrl($page - 1)) ?>">Previous</a><?php endif; ?>
+        <span>Page <?= $page ?> of <?= $pages ?></span>
+        <?php if ($page < $pages): ?><a class="btn btn-ghost btn-sm" rel="next" href="<?= e($pageUrl($page + 1)) ?>">Next</a><?php endif; ?>
+      </nav>
+      <?php endif; ?>
+      <p class="note">Prices and availability change often. Our team will confirm current details before your visit.</p>
     </div></section>
 
     <section class="section bg-paper"><div class="wrap">
@@ -125,7 +175,7 @@
       <div class="section-head center reveal"><p class="eyebrow">Your buying journey</p><h2>Four steps to <em>your new address</em></h2></div>
       <ol class="steps" data-stagger>
         <li class="step reveal"><h3>Share your brief</h3><p>Budget, preferred areas, size, possession timeline and anything you can't compromise on.</p></li>
-        <li class="step reveal"><h3>Shortlist &amp; visit</h3><p>We send verified options with notes, then accompany you on visits — evenings and weekends included.</p></li>
+        <li class="step reveal"><h3>Shortlist &amp; visit</h3><p>We send options that fit, then accompany you on visits — evenings and weekends included.</p></li>
         <li class="step reveal"><h3>Negotiate &amp; agree</h3><p>We negotiate on your behalf using local price data and help you finalise the terms.</p></li>
         <li class="step reveal"><h3>Register &amp; move in</h3><p>Agreement, payment schedule and registry handled step by step until the keys are yours.</p></li>
       </ol>
@@ -133,7 +183,7 @@
 
     <section class="section bg-paper" id="faq"><div class="wrap faq-grid">
       <div class="faq-side reveal"><p class="eyebrow">Buying FAQs</p><h2>Before you <em>buy</em></h2><p>Straight answers to the questions buyers ask us most.</p><a class="btn btn-dark" href="contact">Ask us anything <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></a></div>
-      <div class="faq-list reveal" data-stagger><details class="faq" open><summary>Is a resale property a good choice compared to a new launch?</summary><p>Resale homes are usually ready to move into, so you can see exactly what you're paying for and avoid construction delays. New launches may offer payment plans and newer amenities. We'll lay out both options for your budget so you can compare fairly.</p></details><details class="faq"><summary>What documents should I check before buying?</summary><p>At minimum: the sale deed or allotment letter, previous chain of ownership, RERA registration (for projects), occupancy or completion certificate, society NOC, and proof that maintenance and property taxes are paid. We review these for every ARG Verified property.</p></details><details class="faq"><summary>How much should I budget beyond the property price?</summary><p>Plan for stamp duty and registration charges, legal and documentation costs, society transfer fees, and furnishing. We'll give you an itemised estimate for the specific property before you commit.</p></details><details class="faq"><summary>Can you help NRIs buy remotely?</summary><p>Yes. We can share detailed video walkthroughs, coordinate document verification and work with your power of attorney holder for registration.</p></details><details class="faq"><summary>What if the property I want isn't listed here?</summary><p>Share your requirement — many good homes are sold through our network before they're ever advertised. We'll search on your behalf.</p></details></div>
+      <div class="faq-list reveal" data-stagger><details class="faq" open><summary>Is a resale property a good choice compared to a new launch?</summary><p>Resale homes are usually ready to move into, so you can see exactly what you're paying for and avoid construction delays. New launches may offer payment plans and newer amenities. We'll lay out both options for your budget so you can compare fairly.</p></details><details class="faq"><summary>What documents should I check before buying?</summary><p>At minimum: the sale deed or allotment letter, previous chain of ownership, RERA registration (for projects), occupancy or completion certificate, society NOC, and proof that maintenance and property taxes are paid. Our team can walk you through them for any property you shortlist.</p></details><details class="faq"><summary>How much should I budget beyond the property price?</summary><p>Plan for stamp duty and registration charges, legal and documentation costs, society transfer fees, and furnishing. We'll give you an itemised estimate for the specific property before you commit.</p></details><details class="faq"><summary>Can you help NRIs buy remotely?</summary><p>Yes. We can share detailed video walkthroughs, coordinate document verification and work with your power of attorney holder for registration.</p></details><details class="faq"><summary>What if the property I want isn't listed here?</summary><p>Share your requirement — many good homes are sold through our network before they're ever advertised. We'll search on your behalf.</p></details></div>
     </div></section>
   </main>
 
@@ -145,10 +195,10 @@
     </div>
     <div class="wrap footer-main">
       <div>
-        <a class="brand" href="./" aria-label="Asset Realty Group — home"><img src="https://propertyplusrealtors.com/logo.jpeg" alt="" width="52" height="52"><span class="brand-text"><strong>Asset Realty Group</strong><small>YOUR PROPERTY, OUR PRIORITY</small></span></a>
+        <a class="brand" href="./" aria-label="Asset Realty Group — home"><img src="assets/img/arg-logo.jpeg" alt="" width="52" height="52"><span class="brand-text"><strong>Asset Realty Group</strong><small>YOUR PROPERTY, OUR PRIORITY</small></span></a>
         <p class="footer-about">A Greater Noida West property consultancy helping buyers, sellers and partners move with verified information and honest advice across Delhi NCR.</p>
       </div>
-      <div class="footer-col"><h3>Explore</h3><ul><li><a href="buy">Buy a home</a></li><li><a href="sell">Sell your property</a></li><li><a href="partner">Partner with us</a></li><li><a href="about">About ARG</a></li><li><a href="contact">Contact</a></li></ul></div>
+      <div class="footer-col"><h3>Explore</h3><ul><li><a href="buy">Buy a home</a></li><li><a href="sell">Sell your property</a></li><li><a href="partner">Become a Channel Partner</a></li><li><a href="about">About ARG</a></li><li><a href="contact">Contact</a></li></ul></div>
       <div class="footer-col"><h3>Popular areas</h3><ul><li><a href="buy?loc=Greater+Noida+West">Greater Noida West</a></li><li><a href="buy?loc=Noida">Noida</a></li><li><a href="buy?loc=Greater+Noida">Greater Noida</a></li><li><a href="buy?loc=Ghaziabad">Ghaziabad</a></li></ul></div>
       <div class="footer-col"><h3>Visit us</h3><ul>
         <li><svg class="icon" aria-hidden="true"><use href="#pin"/></svg><span>Office No. T-39B, 3rd Floor, Galaxy Blue Sapphire Plaza, Greater Noida West, U.P. 201306</span></li>
@@ -157,7 +207,7 @@
         <li><svg class="icon" aria-hidden="true"><use href="#clock"/></svg><span>Monday – Sunday, 9:30 AM – 7:30 PM</span></li>
       </ul></div>
     </div>
-    <div class="wrap footer-bottom"><span>© <span data-year>2026</span> Asset Realty Group. All rights reserved.</span><span>Listings shown are representative. Please verify details with our team before deciding.</span></div>
+    <div class="wrap footer-bottom"><span>© <span data-year>2026</span> Asset Realty Group. All rights reserved.</span><span>Prices and availability can change. Please confirm details with our team before deciding.</span></div>
   </footer>
 
   <a class="float-wa" href="https://wa.me/919217093330?text=Hi%20ARG%2C%20I'd%20like%20to%20talk%20about%20a%20property." target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp"><svg class="icon" aria-hidden="true"><use href="#wa"/></svg></a>
