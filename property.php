@@ -30,9 +30,9 @@ function arg_page_open(string $title, string $description, string $extraHead = '
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Manrope:wght@400;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Manrope:wght@400;600;700;800&display=swap"></noscript>
-  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/style.css?v=20261108">
   <?= $extraHead ?>
-  <script src="/assets/js/main.js" defer></script>
+  <script src="/assets/js/main.js?v=20261108" defer></script>
 </head>
 <body class="property-page">
 <?php
@@ -89,7 +89,8 @@ $listingLd = [
         'name' => $p['name'] . ' in ' . $p['society'],
         'numberOfBedrooms' => $p['bhk'],
         'floorSize' => ['@type' => 'QuantitativeValue', 'value' => $p['area'], 'unitCode' => 'FTK'],
-        'address' => array_filter(['@type' => 'PostalAddress', 'streetAddress' => trim($p['society'] . ($p['address'] ? ', ' . $p['address'] : '')), 'addressLocality' => $p['city'], 'postalCode' => $p['pincode'], 'addressCountry' => 'IN']),
+        'numberOfBathroomsTotal' => $p['bathrooms'],
+        'address' => array_filter(['@type' => 'PostalAddress', 'streetAddress' => implode(', ', array_filter([$p['society'], $p['address'], $p['locality']])), 'addressLocality' => $p['city'], 'postalCode' => $p['pincode'], 'addressCountry' => 'IN']),
     ]),
 ];
 if ($p['listed_at']) {
@@ -119,6 +120,8 @@ $photoMessage = 'https://wa.me/919217093330?text=' . rawurlencode('Hi ARG, pleas
 
 $details = array_filter([
     ['bed', 'Configuration', $p['bhk_text']],
+    ['bath', 'Bathrooms', $p['bathrooms'] !== null ? (string) $p['bathrooms'] : ''],
+    ['home', 'Balconies', $p['balconies'] !== null ? (string) $p['balconies'] : ''],
     ['area', 'Area', $p['area_label']],
     ['rupee', 'Price per sq.ft', '₹' . number_format($p['per_sqft'])],
     ['home', 'Property type', $p['type']],
@@ -128,6 +131,9 @@ $details = array_filter([
     ['key', 'Furnishing', $p['furnishing']],
     ['eye', 'Condition', $p['condition']],
     ['tag', 'Parking', $p['parking'] > 0 ? (string) $p['parking'] : ''],
+    ['arrow-up', 'Lift', $p['lift'] === null ? '' : ($p['lift'] ? 'Available' : 'Not available')],
+    ['clock', 'Property age', $p['age_years'] === null ? '' : ($p['age_years'] === 0 ? 'Less than 1 year' : $p['age_years'] . ($p['age_years'] === 1 ? ' year' : ' years'))],
+    ['rupee', 'Maintenance', $p['maintenance'] ? '₹' . number_format($p['maintenance']) : ''],
 ], function ($row) { return $row[2] !== ''; });
 
 $similar = array_values(array_filter($list, function ($x) use ($p) { return $x['code'] !== $p['code'] && $x['city'] === $p['city']; }));
@@ -145,7 +151,7 @@ arg_page_open($pageTitle, $metaDescription, $extraHead);
       <div class="prop-head-row">
         <div>
           <h1><?= e($p['name']) ?> for Sale in <em><?= e($p['society']) ?>, <?= e($p['city']) ?></em></h1>
-          <p class="prop-loc"><?= arg_icon('pin') ?><?= e(implode(', ', array_filter([$p['tower'], $p['address'], $p['society'], $p['city'], $p['pincode']]))) ?></p>
+          <p class="prop-loc"><?= arg_icon('pin') ?><?= e(implode(', ', array_unique(array_filter([$p['tower'], $p['society'], $p['address'], $p['locality'], $p['city'], $p['pincode']])))) ?></p>
         </div>
         <div class="prop-price">
           <strong><?= e($p['price_label']) ?></strong>
@@ -187,11 +193,18 @@ arg_page_open($pageTitle, $metaDescription, $extraHead);
         <p class="prop-text">This is a <?= $summary ?></p>
         <?php if ($p['description']): ?><p class="prop-text"><?= nl2br(e($p['description'])) ?></p><?php endif; ?>
 
+        <?php if ($p['landmarks']): ?>
+        <h2 class="prop-h2">What's nearby</h2>
+        <ul class="prop-nearby">
+          <?php foreach ($p['landmarks'] as $place): ?><li><?= arg_icon('pin') ?><?= e($place) ?></li><?php endforeach; ?>
+        </ul>
+        <?php endif; ?>
+
         <?php if ($p['videos']): ?>
         <h2 class="prop-h2">Videos</h2>
         <ul class="prop-videos">
           <?php foreach ($p['videos'] as $i => $video): ?>
-          <li><?php if (preg_match('/\.(mp4|webm)(\?|$)/i', $video)): ?><video controls preload="none" src="<?= e($video) ?>" aria-label="Video <?= $i + 1 ?> of this property"></video><?php else: ?><a class="link" href="<?= e($video) ?>" target="_blank" rel="noopener">Watch video <?= $i + 1 ?> <?= arg_icon('arrow') ?></a><?php endif; ?></li>
+          <li><?php if (preg_match('/\.(mp4|webm)(\?|$)/i', $video)): ?><video controls preload="metadata" playsinline src="<?= e($video) ?>" aria-label="Video <?= $i + 1 ?> of this property"></video><?php else: ?><a class="link" href="<?= e($video) ?>" target="_blank" rel="noopener">Watch video <?= $i + 1 ?> <?= arg_icon('arrow') ?></a><?php endif; ?></li>
           <?php endforeach; ?>
         </ul>
         <?php endif; ?>

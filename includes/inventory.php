@@ -131,17 +131,63 @@ function arg_slugify(string $text): string
     return trim((string) preg_replace('/[^a-z0-9]+/', '-', strtolower($text)), '-');
 }
 
-function arg_clean_photos($urls): array
+/**
+ * A media link may carry a ?token=. Only read-only "public_asset" tokens are published.
+ * The API has returned links signed with staff login tokens (e.g. role super_admin);
+ * putting those on a public page would hand out account access, so they are dropped.
+ */
+function arg_safe_media_token(string $url): bool
+{
+    parse_str((string) parse_url($url, PHP_URL_QUERY), $query);
+    if (!isset($query['token'])) {
+        return true;
+    }
+    $parts = explode('.', (string) $query['token']);
+    $payload = count($parts) === 3 ? json_decode((string) base64_decode(strtr($parts[1], '-_', '+/')), true) : null;
+    return is_array($payload) && ($payload['scope'] ?? '') === 'public_asset' && !isset($payload['sub']) && !isset($payload['role']);
+}
+
+function arg_clean_media($urls): array
 {
     $blocked = arg_config()['blocked_photo_hosts'];
     $clean = [];
     foreach (is_array($urls) ? $urls : [] as $url) {
-        $host = is_string($url) && stripos($url, 'https://') === 0 ? (string) parse_url($url, PHP_URL_HOST) : '';
-        if ($host !== '' && !in_array(strtolower($host), $blocked, true)) {
+        $host = is_string($url) && stripos($url, 'https://') === 0 ? strtolower((string) parse_url($url, PHP_URL_HOST)) : '';
+        if ($host !== '' && $host !== 'localhost' && $host !== '127.0.0.1' && !in_array($host, $blocked, true) && arg_safe_media_token($url)) {
             $clean[] = $url;
         }
     }
-    return $clean;
+    return array_values(array_unique($clean));
+}
+
+/** Nearby landmarks may arrive as text, a list of names, or a list of {name, distance}. */
+function arg_landmarks($value): array
+{
+    if (is_string($value)) {
+        $value = preg_split('/[\n,;]+/', $value);
+    }
+    $out = [];
+    foreach (is_array($value) ? $value : [] as $item) {
+        if (is_array($item)) {
+            $name = trim((string) ($item['name'] ?? $item['title'] ?? $item['label'] ?? ''));
+            $distance = trim((string) ($item['distance'] ?? $item['distance_text'] ?? ''));
+            if (is_numeric($distance)) {
+                $distance .= ' km';
+            }
+            $item = $name !== '' && $distance !== '' ? "$name ($distance)" : $name;
+        }
+        $item = trim((string) (is_scalar($item) ? $item : ''));
+        if ($item !== '') {
+            $out[] = mb_substr($item, 0, 120);
+        }
+    }
+    return array_slice(array_values(array_unique($out)), 0, 12);
+}
+
+/** A whole number within a sensible range, or null. */
+function arg_count($value, int $max): ?int
+{
+    return is_numeric($value) && (int) $value >= 0 && (int) $value <= $max ? (int) $value : null;
 }
 
 /** Turns one API row into consistent display values. The API has values like "3", "3bhk" and "3.5BHK". */
@@ -161,7 +207,11 @@ function arg_normalize(array $row): array
     $furnishing = strtolower(trim((string) ($row['furnishing'] ?? '')));
     $furnishing = ['semi' => 'Semi-furnished', 'unfurnished' => 'Unfurnished', 'furnished' => 'Fully furnished', 'full' => 'Fully furnished'][$furnishing] ?? '';
     $condition = trim((string) ($row['condition'] ?? ''));
-    $photos = arg_clean_photos(array_merge((array) ($row['photos'] ?? []), [$row['cover_photo_url'] ?? null]));
+    $photos = arg_clean_media(array_merge((array) ($row['photos'] ?? []), [$row['cover_photo_url'] ?? null]));
+    $maintenance = is_numeric($row['maintenance_charge'] ?? null) && (float) $row['maintenance_charge'] > 0 && (float) $row['maintenance_charge'] < 1000000 ? (float) $row['maintenance_charge'] : null;
+    $lift = $row['has_lift'] ?? null;
+    $lift = is_bool($lift) || in_array($lift, [0, 1, '0', '1', 'true', 'false'], true) ? filter_var($lift, FILTER_VALIDATE_BOOLEAN) : null;
+    $locality = trim((string) ($row['locality'] ?? ''));
 
     return [
         'id' => (string) ($row['id'] ?? ''),
@@ -188,8 +238,15 @@ function arg_normalize(array $row): array
         'parking' => (int) ($row['parking_count'] ?? 0),
         'listed_at' => (string) ($row['listed_at'] ?? ''),
         'description' => trim((string) ($row['description'] ?? '')),
-        'photos' => array_values(array_unique($photos)),
-        'videos' => array_values(array_filter((array) ($row['videos'] ?? []), function ($v) { return is_string($v) && stripos($v, 'https://') === 0; })),
+        'photos' => $photos,
+        'videos' => arg_clean_media((array) ($row['videos'] ?? [])),
+        'bathrooms' => arg_count($row['bathrooms'] ?? null, 20),
+        'balconies' => arg_count($row['balconies'] ?? null, 20),
+        'maintenance' => $maintenance,
+        'age_years' => arg_count($row['property_age_years'] ?? null, 100),
+        'lift' => $lift,
+        'locality' => strcasecmp($locality, $city) === 0 ? '' : $locality,
+        'landmarks' => arg_landmarks($row['nearby_landmarks'] ?? null),
         'url' => "/property/$slug",
         'slug' => $slug,
     ];
@@ -243,8 +300,12 @@ function arg_icon(string $name): string
 
 function arg_card_html(array $p, int $i = 0): string
 {
-    $specs = '<span>' . arg_icon('bed') . e($p['bhk_text']) . '</span><span>' . arg_icon('area') . e($p['area_label']) . '</span>';
-    if ($p['floor'] !== null) {
+    $specs = '<span>' . arg_icon('bed') . e($p['bhk_text']) . '</span>';
+    if ($p['bathrooms']) {
+        $specs .= '<span>' . arg_icon('bath') . $p['bathrooms'] . ' Bath</span>';
+    }
+    $specs .= '<span>' . arg_icon('area') . e($p['area_label']) . '</span>';
+    if ($p['floor'] !== null && !$p['bathrooms']) {
         $specs .= '<span>' . arg_icon('building') . 'Floor ' . $p['floor'] . '</span>';
     }
     $media = $p['photos']
@@ -255,7 +316,7 @@ function arg_card_html(array $p, int $i = 0): string
         . '<div class="card-body">'
         . '<p class="card-price">' . e($p['price_label']) . ' <small>· ₹' . number_format($p['per_sqft']) . '/sq.ft</small></p>'
         . '<h3 class="card-title"><a href="' . e($p['url']) . '">' . e($p['name']) . ' in ' . e($p['society']) . '</a></h3>'
-        . '<p class="card-loc">' . arg_icon('pin') . e($p['city']) . '</p>'
+        . '<p class="card-loc">' . arg_icon('pin') . e(implode(', ', array_filter([$p['locality'], $p['city']]))) . '</p>'
         . '<div class="card-specs">' . $specs . '</div>'
         . '<div class="card-actions"><a class="btn btn-dark" href="' . e($p['url']) . '" aria-label="View details of ' . e($p['name'] . ' in ' . $p['society']) . '">View details</a>'
         . '<button class="icon-btn" type="button" aria-pressed="false" aria-label="Shortlist ' . e($p['name'] . ' in ' . $p['society']) . '" data-shortlist="' . e($p['code']) . '">' . arg_icon('heart') . '</button></div>'

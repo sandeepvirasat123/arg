@@ -66,7 +66,16 @@ Run locally on PHP 7.4 and Chrome headless, 2026-11-07. Test scripts are not par
 
 Hidden by the data-quality check on 2026-11-07 (7 of 16): INV-000075 (₹77,777 Cr), INV-000074 (218,884 sq.ft), INV-000071 (₹98 Cr for 1,400 sq.ft), INV-000069 (₹40 Cr for 1,600 sq.ft), INV-000072 (Pune, ₹5.8 Lakh), INV-000079 and INV-000063 (₹1,000 per sq.ft).
 
-## Open approvals
+## API update (2026-11-08)
+
+- New API fields are supported: bathrooms, balconies, maintenance charge, property age, lift, locality and nearby landmarks. Each shows only when filled in. All were empty on 2026-11-08.
+- Photos and videos are now shown. Only links with a read-only `public_asset` token are published.
+- **Security issue in the API, to fix at the backend:** photo links for INV-000087 and INV-000088 carried staff login tokens (roles `super_admin` and `seller_cp`, expired 2026-10-25). The site drops them. The backend should stop signing public media with login tokens and review those accounts.
+- Photo tokens expire after about 30 days (currently 2026-12-08). If a link fails, cards fall back to "Photos on request".
+- CSS/JS links now use `?v=20261108`.
+- Results: inventory suite 66 of 66 (real Apache + mock API), enquiry suite 55 of 55.
+
+
 
 1. **Joining fee.** The old "no joining fee" claim was removed, as the brief requires confirmation. The FAQ says only that submitting an enquiry is free.
 2. **Why ARG claims.** The five points on the page and the who-does-what tabs must be operationally true.

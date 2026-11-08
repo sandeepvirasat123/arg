@@ -38,6 +38,19 @@
   document.addEventListener("error", markLoaded, true);
   // Images already rendered by the server may finish before this script runs
   $$(".card-media img").forEach((img) => { if (img.complete) img.classList.add("loaded"); });
+  // Property photo links expire. If one fails, show the "Photos on request" tile instead of a broken image.
+  const photoFallback = (img) => {
+    const media = img.closest(".card-media");
+    if (!media || media.classList.contains("no-photo")) return;
+    media.classList.add("no-photo");
+    media.innerHTML = `<span class="ph-tile"><svg class="icon" aria-hidden="true"><use href="#building"/></svg><small>Photos on request</small></span>`;
+  };
+  document.addEventListener("error", (e) => {
+    if (e.target.tagName !== "IMG") return;
+    if (e.target.closest(".card-media")) photoFallback(e.target);
+    if (e.target.closest(".gallery-thumbs")) e.target.closest("li").hidden = true;
+  }, true);
+  $$(".card-media img").forEach((img) => { if (img.complete && !img.naturalWidth) photoFallback(img); });
 
   /* Shortlist hearts (per visitor, browser only) */
   const readShortlist = () => { try { return JSON.parse(localStorage.getItem("arg-shortlist") || "[]"); } catch { return []; } };

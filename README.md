@@ -20,6 +20,10 @@ Shared assets:
 - `assets/css/style.css` — design tokens and all styles (brand palette: teal `#26626A`, gold `#BF9855`, ink `#233238`, surface `#F4F7F7`, with a deeper gold `#8a6d36` for small text on light backgrounds)
 - `assets/js/main.js` — mobile menu, scroll reveal, hero search, listings and filters, valuation stepper, forms → WhatsApp
 
+## Updating CSS or JavaScript
+
+The server tells browsers to keep these files for 7 days. After changing `assets/css/style.css` or `assets/js/main.js`, change the `?v=` number where they are linked in every `.html` page, `buy.php` and `property.php`, then upload those files too. Otherwise returning visitors keep the old version.
+
 ## Editing content
 
 - **Listings:** these come from the inventory API, so change them in the inventory system. The site updates within about 5 minutes.
